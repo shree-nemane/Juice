@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JUICE</title>
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    <link href="https://fonts.cdnfonts.com/css/beyonders" rel="stylesheet">
+    <style>
+        .beyonders-font {
+            font-family: 'Beyonders', sans-serif;
+        }
+
+        /* General Theme Colors & Fonts */
+        :root {
+            --brand-dark: #0F253E; /* Dark greenish-blue - initial default */
+            --brand-lime: #7ce633; /* Main lime green - initial default */
+        }
+        body {
+            font-family: 'Noto Sans Display', sans-serif; /* Consistent font */
+            position: relative;
+            overflow-x: hidden;
+            transition: background 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        /* Dynamic text and background colors applied via JS and CSS variables */
+        .text-brand-dark { color: var(--brand-dark); }
+        .bg-brand-lime { background-color: var(--brand-lime); }
+
+        .fade {
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            background: var(--next-gradient, none);
+        }
+        body.crossfade::before {
+            opacity: 1;
+        }
+        .grid-fade {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.5s, transform 0.5s;
+        }
+        .grid-fade-in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .bottle-move-left {
+            left: 0 !important;
+            transform: translateX(-80%) scale(0.8);
+            transition: left 0.6s, transform 0.6s;
+        }
+        .bottle-center {
+            left: 50%;
+            transform: translateX(-50%) scale(1);
+            transition: left 0.6s, transform 0.6s;
+        }
+
+        /* Cart Sidebar Styles */
+        #cartSidebar {
+            position: fixed;
+            top: 0;
+            right: -400px;
+            width: 400px;
+            height: 100%;
+            background-color: #F8F4EA;
+            z-index: 1000;
+            transition: right 0.3s ease-in-out;
+            box-shadow: -5px 0 15px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            border-left: 5px solid var(--brand-lime); /* Dynamic brand accent */
+        }
+        #cartSidebar.open {
+            right: 0;
+        }
+        #cartSidebar h2 {
+            color: var(--brand-dark); /* Dynamic dark text */
+        }
+        #cartSidebar button {
+             border-radius: 9999px; /* Fully rounded buttons */
+        }
+        #cartSidebar .bg-green-600 { /* This is for the confirm order button */
+            background-color: var(--brand-lime); /* Dynamic brand lime for confirm button */
+            transition: background-color 0.3s ease;
+        }
+        #cartSidebar .bg-green-600:hover { /* This is for the confirm order button */
+            background-color: var(--brand-dark); /* Dynamic darken on hover */
+        }
+        /* Cart item quantity buttons */
+        #cartItems button.px-2.border.rounded {
+            border-color: #ccc;
+            color: var(--brand-dark);
+            background-color: #f0f0f0;
+            border-radius: 4px;
+        }
+        #cartItems button.px-2.border.rounded:hover {
+            background-color: #e0e0e0;
+        }
+
+        /* Order Confirmation Popup */
+        #orderConfirmationPopup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1100;
+            transition: opacity 0.3s, visibility 0.3s;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            padding: 30px;
+            text-align: center;
+        }
+        #orderConfirmationPopup h2 {
+            color: var(--brand-dark);
+        }
+        #orderConfirmationPopup button.bg-blue-600 {
+            background-color: var(--brand-lime); /* Dynamic brand lime for close button */
+            transition: background-color 0.3s ease;
+        }
+        #orderConfirmationPopup button.bg-blue-600:hover {
+            background-color: var(--brand-dark);
+        }
+
+        /* Dropdown Styles */
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: white;
+            min-width: 120px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            right: 0;
+            border-radius: 8px;
+            overflow: hidden;
+            top: 100%;
+            margin-top: 5px;
+        }
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            text-align: left;
+        }
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+        .dropdown-content.active {
+            display: block;
+        }
+
+        /* Modal Styles (Profile & Logout) */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: white;
+            margin: auto;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            width: 80%;
+            max-width: 500px;
+            position: relative;
+        }
+        .modal-content h2, .modal-content h3 {
+            color: var(--brand-dark); /* Dynamic dark text */
+        }
+        .modal-content button.bg-blue-600 {
+            background-color: var(--brand-lime); /* Dynamic brand lime for OK button */
+            transition: background-color 0.3s ease;
+        }
+        .modal-content button.bg-blue-600:hover {
+            background-color: var(--brand-dark);
+        }
+
+        .close-button {
+            color: #aaa;
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close-button:hover,
+        .close-button:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .order-item {
+            border-bottom: 1px solid #eee;
+            padding: 10px 0;
+        }
+        .order-item:last-child {
+            border-bottom: none;
+        }
+
+        /* Styles for individual cart item notifications */
+        .cart-item-notification {
+            background-color: black;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out, max-height 0.3s ease-in-out, padding 0.3s ease-in-out, margin 0.3s ease-in-out;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            max-height: 50px;
+            margin-bottom: 8px;
+            overflow: hidden;
+        }
+
+        .cart-item-notification.show {
+            opacity: 1;
+            transform: translateY(0);
+            max-height: 50px;
+            padding-top: 10px;
+            padding-bottom: 10px;
+            margin-bottom: 8px;
+        }
+
+        /* Product section buttons */
+        #main-controls button, #main-price button {
+             border-radius: 9999px; /* Make buttons fully rounded */
+        }
+    </style>
+</head>
+<body>
+    <header class="flex justify-between items-center py-4 px-6">
+        <div class="text-md text-black font-semibold beyonders-font relative">
+            <a class="text-md beyonders-font font-semibold text-black" href="./index.html">
+                <img class="w-20" src="./assets/juicee_logo.png" alt="">
+            </a>
+        </div>
+        <nav class="flex items-center space-x-4">
+            <div class="w-10 h-10 p-2 bg-white rounded-full hover:backdrop-blur-md hover:bg-white/10 border border-white/20 shadow-lg relative user-icon-container">
+                <a id="userIconLink" href="./register.html" aria-label="User profile or register">
+                    <img src="./assets/profile.png" alt="User Profile Icon">
+                </a>
+                <div id="userDropdown" class="dropdown-content">
+                    <a href="#" id="profileLink" role="menuitem">Profile</a>
+                    <a href="#" id="logoutLink" role="menuitem">Logout</a>
+                </div>
+            </div>
+            <div class="w-10 h-10 p-2 bg-white rounded-full hover:backdrop-blur-md hover:bg-white/10 border relative border-white/20 shadow-lg">
+                <button id="cart" aria-label="Open shopping cart"><img src="./assets/shop.png" alt="Shopping Cart Icon"></button>
+            </div>
+        </nav>
+    </header>
+
+    <div id="notificationContainer" class="fixed top-20 right-4 z-50 flex flex-col gap-2" aria-live="polite" aria-atomic="true">
+    </div>
+
+    <section class="flex justify-center items-center gap-8 mt-2">
+        <button id="productBtn" class="py-2 px-4 rounded-full border border-white/20 shadow-lg transition-all duration-200 bg-white text-black font-semibold hover:border hover:border-black hover:bg-white/10 hover:backdrop-blur-md" aria-controls="hero" aria-selected="true">
+            Product
+        </button>
+        <button id="infoBtn" class="py-2 px-4 rounded-full border border-white/20 shadow-lg transition-all duration-200 bg-transparent text-black font-semibold hover:border hover:border-black hover:bg-white/10 hover:backdrop-blur-md" aria-controls="about-info" aria-selected="false">
+            About This
+        </button>
+    </section>
+
+    <main id="hero" class="relative">
+        <div class="absolute inset-0 flex justify-center items-start z-10 pointer-events-none">
+            <div class="relative w-135 h-135 mt-5">
+                <img id="bottle-img" class="absolute w-full h-full object-contain bottle-center transition-all duration-500" src="./assets/red_juice1.png" alt="Bottle of juice">
+            </div>
+        </div>
+
+        <section class="relative z-0 flex justify-between items-center min-h-[500px] px-16">
+            <article id="grid-left" class="flex flex-col items-start justify-center text-white gap-5 grid-fade grid-fade-in">
+                <h1 class="text-6xl font-bold" id="main-title">Sip Into Freshness</h1>
+                <p class="max-w-lg" id="main-desc">Experience the rich, smooth essence of our Caramel Delight. Made with natural caramel and premium ingredients, it's a sweet escape in every sip. This exquisite blend offers a comforting warmth with hints of vanilla and butterscotch, perfect for a luxurious treat any time of day. Each bottle is crafted to perfection, ensuring a consistently delightful and satisfying experience.</p>
+            </article>
+
+            <article id="grid-right" class="flex flex-col items-start justify-center text-white gap-4 grid-fade grid-fade-in">
+                <h2 class="text-3xl" id="bottle-flavor-label">Caramel Delight</h2>
+                <div class="space-x-2" id="main-controls">
+                    <button id="qty500" class="py-2 px-4 rounded-full shadow-lg transition-all duration-200 font-semibold" aria-pressed="true">
+                        500 ml
+                    </button>
+                    <button id="qty250" class="py-2 px-4 rounded-full shadow-lg transition-all duration-200 font-semibold" aria-pressed="false">
+                        250 ml
+                    </button>
+                    <button id="qty100" class="py-2 px-4 rounded-full shadow-lg transition-all duration-200 font-semibold" aria-pressed="false">
+                        100 ml
+                    </button>
+                </div>
+                <div class="mt-20" id="main-price">
+                    <p class="text-4xl font-bold mb-4">
+                        $25.50
+                    </p>
+                    <button id="buyNow" class="px-6 py-2 rounded-full border border-white/20 shadow-lg transition-all duration-200 font-semibold bg-white border border-black hover:border hover:border-black hover:bg-white/10 hover:backdrop-blur-md" aria-label="Add to Cart">Add to Cart</button>
+                </div>
+                <section id="about-info" class="hidden flex-col items-start justify-center gap-4 mt-10 pl-10" aria-hidden="true">
+                    <h2 class="text-4xl font-bold mb-4" id="about-info-title">Product Information</h2>
+                    <div class="text-lg w-150" id="about-info-content">
+                        </div>
+                </section>
+            </article>
+        </section>
+    </main>
+
+    <aside id="cartSidebar" class="flex flex-col" aria-hidden="true">
+        <div class="p-4 border-b flex justify-between items-center">
+            <h2 class="text-2xl font-bold">Your Cart</h2>
+            <button id="closeCartBtn" class="text-2xl" aria-label="Close cart sidebar">&times;</button>
+        </div>
+        <div id="userInfo" class="p-4 border-b">
+            <p>Welcome, <span id="cartUserName" class="font-semibold">Guest</span></p>
+        </div>
+        <div id="cartItems" class="flex-grow p-4 overflow-y-auto">
+            <p class="text-gray-500 text-center">Your cart is empty.</p>
+        </div>
+        <div id="priceSection" class="p-4 border-t">
+            <div class="flex justify-between"><span>Subtotal</span><span id="subtotalPrice">$0.00</span></div>
+            <div class="flex justify-between"><span>Taxes & Charges</span><span id="taxesPrice">$0.00</span></div>
+            <hr class="my-2">
+            <div class="flex justify-between font-bold text-lg"><span>Total</span><span id="totalPrice">$0.00</span></div>
+            <button id="confirmOrderBtn" class="w-full bg-green-600 text-white py-3 rounded-md mt-4 hover:bg-green-700">Confirm Order</button>
+        </div>
+    </aside>
+
+    <div id="orderConfirmationPopup" class="hidden p-8 bg-white rounded-2xl shadow-lg text-center" role="dialog" aria-modal="true" aria-labelledby="orderConfirmationTitle" aria-hidden="true">
+        <h2 id="orderConfirmationTitle" class="text-2xl font-bold mb-4">Order Placed!</h2>
+        <p>Thank you for your purchase. Your juice is on its way!</p>
+        <button id="closePopupBtn" class="mt-6 bg-blue-600 text-white py-2 px-6 rounded-md hover:bg-blue-700">Close</button>
+    </div>
+
+    <div id="profileModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="profileModalTitle" aria-hidden="true">
+        <div class="modal-content">
+            <span class="close-button" id="closeProfileModalBtn" aria-label="Close profile modal">&times;</span>
+            <h2 id="profileModalTitle" class="text-2xl font-bold mb-4">User Profile</h2>
+            <p class="mb-2">Name: <span id="profileUserName" class="font-semibold"></span></p>
+            <p class="mb-2">Email: <span id="profileUserEmail" class="font-semibold"></span></p>
+            <h3 class="text-xl font-bold mt-4 mb-2">Past Orders</h3>
+            <div id="pastOrdersList" class="max-h-60 overflow-y-auto border rounded p-2">
+                <p class="text-gray-500">No past orders found.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="logoutModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="logoutModalTitle" aria-hidden="true">
+        <div class="modal-content">
+            <span class="close-button" id="closeLogoutModalBtn" aria-label="Close logout modal">&times;</span>
+            <h2 id="logoutModalTitle" class="text-2xl font-bold mb-4">Logged Out</h2>
+            <p>You have been successfully logged out.</p>
+            <button id="logoutModalOkBtn" class="mt-6 bg-blue-600 text-white py-2 px-6 rounded-md hover:bg-blue-700">OK</button>
+        </div>
+    </div>
+
+    <footer class="flex items-center justify-between mx-10 gap-4 mt-8">
+        <div class="text-white">
+            <svg id="downArrow" xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor" class="bi bi-arrow-down-circle-fill" viewBox="0 0 16 16" aria-label="Scroll down for more products">
+                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v5.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293z"/>
+            </svg>
+        </div>
+        <div class="flex items-center justify-center gap-4">
+            <div class="w-12 p-1 bg-white rounded-full">
+                <img class="rounded-full" src="./assets/fea1.png" alt="Feature 1: Freshness Guarantee">
+            </div>
+            <div class="w-12 p-1 bg-white rounded-full">
+                <img class="rounded-full" src="./assets/fea2.png" alt="Feature 2: Natural Ingredients">
+            </div>
+            <div class="w-12 p-1 bg-white rounded-full">
+                <img class="rounded-full" src="./assets/fea3.png" alt="Feature 3: Eco-friendly Packaging">
+            </div>
+        </div>
+    </footer>
+
+<script>
+        const productBtn = document.getElementById('productBtn');
+        const infoBtn = document.getElementById('infoBtn');
+        const bottleImg = document.getElementById('bottle-img');
+        const gridLeft = document.getElementById('grid-left');
+        const gridRight = document.getElementById('grid-right');
+        const flavorLabel = document.getElementById('bottle-flavor-label');
+        const qty100Btn = document.getElementById('qty100');
+        const qty250Btn = document.getElementById('qty250');
+        const qty500Btn = document.getElementById('qty500');
+        const mainTitle = document.getElementById('main-title');
+        const mainDesc = document.getElementById('main-desc');
+        const mainControls = document.getElementById('main-controls');
+        const mainPrice = document.getElementById('main-price');
+        const aboutInfo = document.getElementById('about-info');
+        const aboutInfoTitle = document.getElementById('about-info-title');
+        const aboutInfoContent = document.getElementById('about-info-content');
+        const priceDisplay = mainPrice.querySelector('p');
+        const buyNowBtn = document.getElementById('buyNow');
+        const downArrow = document.getElementById('downArrow');
+
+        // Cart elements
+        const cartBtn = document.getElementById('cart');
+        const cartSidebar = document.getElementById('cartSidebar');
+        const closeCartBtn = document.getElementById('closeCartBtn');
+        const cartItemsContainer = document.getElementById('cartItems');
+        const cartUserNameEl = document.getElementById('cartUserName');
+        const subtotalPriceEl = document.getElementById('subtotalPrice');
+        const taxesPriceEl = document.getElementById('taxesPrice');
+        const totalPriceEl = document.getElementById('totalPrice');
+        const confirmOrderBtn = document.getElementById('confirmOrderBtn');
+
+        // Popup elements
+        const orderConfirmationPopup = document.getElementById('orderConfirmationPopup');
+        const closePopupBtn = document.getElementById('closePopupBtn');
+
+        // User dropdown elements
+        const userIconLink = document.getElementById('userIconLink');
+        const userDropdown = document.getElementById('userDropdown'); // This is the dropdown content div
+        const profileLink = document.getElementById('profileLink');
+        const logoutLink = document.getElementById('logoutLink');
+
+        // Profile Modal elements
+        const profileModal = document.getElementById('profileModal');
+        const closeProfileModalBtn = document.getElementById('closeProfileModalBtn');
+        const profileUserName = document.getElementById('profileUserName');
+        const profileUserEmail = document.getElementById('profileUserEmail');
+        const pastOrdersList = document.getElementById('pastOrdersList');
+
+        // Logout Modal elements
+        const logoutModal = document.getElementById('logoutModal');
+        const closeLogoutModalBtn = document.getElementById('closeLogoutModalBtn');
+        const logoutModalOkBtn = document.getElementById('logoutModalOkBtn');
+
+        // Notification container
+        const notificationContainer = document.getElementById('notificationContainer');
+
+        window.BACKEND_API_URL = '__BACKEND_API_URL__';
+
+        // MAPPING FOR DYNAMIC THEME COLORS AND ASSOCIATED TAILWIND CLASSES
+        const themeColorMap = {
+            "rose-theme": {
+                lime: "#EC4899", // Tailwind rose-500 equivalent
+                dark: "#BE185D", // Darker rose for hover/accents
+                text_class: "text-rose-500",
+                bg_class: "bg-pink-200" // A light pink that might complement rose-500
+            },
+            "pink-theme": {
+                lime: "#F472B6", // Tailwind pink-500 equivalent
+                dark: "#DB2777", // Darker pink for hover/accents
+                text_class: "text-pink-500",
+                bg_class: "bg-fuchsia-200" // A light fuchsia that might complement pink-500
+            },
+            "lime-theme": {
+                lime: "#65A30D", // Tailwind lime-600 equivalent
+                dark: "#4D7C0F", // Darker lime for hover/accents
+                text_class: "text-lime-600",
+                bg_class: "bg-lime-200" // A light lime for bg
+            }
+        };
+
+        const products = [
+            {
+                id: "Rose_juice",
+                flavor: "Rose Delight",
+                image: './assets/cherry.png',
+                gradient: "linear-gradient(to right, #F8F4EA, #F8F4EA, #F8F4EA)",
+                prices: { "500 ml": 25.50, "250 ml": 15.00, "100 ml": 8.00 },
+                title: "Sip Into Freshness",
+                description: "Experience the rich, smooth essence of our Caramel Delight. Made with natural caramel and premium ingredients, it's a sweet escape in every sip. This exquisite blend offers a comforting warmth with hints of vanilla and butterscotch, perfect for a luxurious treat any time of day. Each bottle is crafted to perfection, ensuring a consistently delightful and satisfying experience.",
+                about_info_content: `
+                    <p>Key Info:</p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li>Flavour: Rich Caramel with hints of Vanilla</li>
+                        <li>Ingredients: Filtered Water, Natural Caramel Flavor, Cane Sugar, Citric Acid, Natural Colors.</li>
+                        <li>Size Options: 500 mL, 250 mL, 100 mL</li>
+                        <li>Best Served: Chilled</li>
+                        <li>Storage: Refrigerate after opening.</li>
+                        <li>Allergens: May contain traces of dairy (due to caramel processing).</li>
+                        <li>Suitable for: Dessert lovers, those seeking a comforting drink.</li>
+                        <li>Nutrition (per 100mL): Approximately 60 Cal | 0g Protein | 0g Fat | 15g Sugar</li>
+                    </ul>
+                    <p class="mt-4">Our commitment to quality ensures every sip is a moment of pure bliss. Enjoy the taste of luxury!</p>
+                `,
+                theme_key: "rose-theme" // References a key in themeColorMap
+            },
+            {
+                id: "pink_juice",
+                flavor: "Berry Tango",
+                image: './assets/pink.png',
+                gradient: "linear-gradient(to right, #F8F4EA, #F8F4EA, #F8F4EA)",
+                prices: { "500 ml": 26.50, "250 ml": 16.00, "100 ml": 9.00 },
+                title: "Tropical Bliss",
+                description: "Dive into the vibrant taste of our Mango Tango. Crafted from ripe, succulent mangoes, this juice is a refreshing burst of sunshine. Each bottle captures the sweet and tangy essence of freshly picked mangoes, making it the perfect escape to a tropical paradise. Enjoy its smooth texture and invigorating flavor.",
+                about_info_content: `
+                    <p>Key Info:</p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li>Flavour: Sweet and Tangy Tropical Mango</li>
+                        <li>Ingredients: Filtered Water, Real Mango Pulp, Cane Sugar, Ascorbic Acid (Vitamin C), Natural Flavors.</li>
+                        <li>Size Options: 500 mL, 250 mL, 100 mL</li>
+                        <li>Best Served: Ice cold</li>
+                        <li>Storage: Keep refrigerated.</li>
+                        <li>Allergens: None (mango-only).</li>
+                        <li>Suitable for: Fruit lovers, anyone needing a refreshing boost.</li>
+                        <li>Nutrition (per 100mL): Approximately 55 Cal | 0g Protein | 0g Fat | 13g Sugar | High in Vitamin C</li>
+                    </ul>
+                    <p class="mt-4">A true taste of the tropics, bottled just for you. Get ready to dance with Mango Tango!</p>
+                `,
+                theme_key: "pink-theme" // References a key in themeColorMap
+            },
+            {
+                id: "mint_juice",
+                flavor: "Zesty Mint Splash",
+                image: './assets/green.png',
+                gradient: "linear-gradient(to right, #F8F4EA, #F8F4EA, #F8F4EA)",
+                prices: { "500 ml": 24.50, "250 ml": 14.00, "100 ml": 7.50 },
+                title: "Cool Refreshment",
+                description: "Quench your thirst with our Zesty Mint Splash. A cool, invigorating blend with a hint of natural sweetness, perfect for a revitalizing experience. This unique juice combines fresh mint with a subtle citrus zest, leaving a crisp and clean finish that truly awakens your senses.",
+                about_info_content: `
+                    <p>Key Info:</p>
+                    <ul class="list-disc list-inside ml-4">
+                        <li>Flavour: Fresh Mint with Citrus Zest</li>
+                        <li>Ingredients: Purified Water, Natural Mint Extract, Lemon Juice Concentrate, Cane Sugar, Natural Flavors.</li>
+                        <li>Size Options: 500 mL, 250 mL, 100 mL</li>
+                        <li>Best Served: Extremely cold for maximum refreshment</li>
+                        <li>Storage: Store in a cool, dry place.</li>
+                        <li>Allergens: None.</li>
+                        <li>Suitable for: Those seeking a refreshing, non-sweet, hydrating drink.</li>
+                        <li>Nutrition (per 100mL): Approximately 40 Cal | 0g Protein | 0g Fat | 10g Sugar</li>
+                    </ul>
+                    <p class="mt-4">A splash of coolness in every bottle, designed to invigorate your day. Taste the freshness!</p>
+                `,
+                theme_key: "lime-theme" // References a key in themeColorMap
+            }
+        ];
+
+        let currentProductIndex = 0;
+        let selectedQuantity = "500 ml";
+        let cart = [];
+
+        function applyDynamicClasses(classesToRemove, classesToAdd, elements) {
+            elements.forEach(el => {
+                if (el) {
+                    el.classList.remove(...classesToRemove);
+                    el.classList.add(...classesToAdd);
+                }
+            });
+        }
+
+        function showProductSection() {
+            // Update button styles
+            applyDynamicClasses(['bg-transparent'], ['bg-white', 'text-black'], [productBtn]);
+            applyDynamicClasses(['bg-white', 'text-black'], ['bg-transparent'], [infoBtn]);
+
+            productBtn.setAttribute('aria-selected', 'true');
+            infoBtn.setAttribute('aria-selected', 'false');
+
+            // Hide/show relevant sections
+            aboutInfo.setAttribute('aria-hidden', 'true');
+            mainControls.setAttribute('aria-hidden', 'false');
+            mainPrice.setAttribute('aria-hidden', 'false');
+
+            bottleImg.classList.remove('bottle-move-left');
+            bottleImg.classList.add('bottle-center');
+            aboutInfo.classList.add('hidden');
+            mainTitle.classList.remove('hidden');
+            mainDesc.classList.remove('hidden');
+            mainControls.classList.remove('hidden');
+            mainPrice.classList.remove('hidden');
+            flavorLabel.classList.remove('hidden');
+            gridLeft.classList.add('grid-fade-in');
+            gridRight.classList.add('grid-fade-in');
+
+            // Re-apply product-specific color to main product elements
+            const currentTheme = products[currentProductIndex].theme_key;
+            const currentTextColorClass = themeColorMap[currentTheme].text_class;
+            const currentBgColorClass = themeColorMap[currentTheme].bg_class;
+
+            // Elements that get the main text color
+            applyDynamicClasses(Object.values(themeColorMap).map(t => t.text_class), [currentTextColorClass], [mainTitle, mainDesc, flavorLabel, priceDisplay, downArrow]);
+            // Elements that get the background color on hover/active
+            applyDynamicClasses(['bg-white', 'border-black'], [currentTextColorClass, 'bg-white'], [buyNowBtn]); // Buy Now button is special, bg-white with dynamic text color
+            buyNowBtn.style.borderColor = themeColorMap[currentTheme].dark; // Set border color dynamically for buyNowBtn
+
+            // Re-apply selected quantity styling
+            updateQuantityButtonStyles();
+        }
+
+        function showAboutSection() {
+            // Update button styles
+            applyDynamicClasses(['bg-transparent'], ['bg-white', 'text-black'], [infoBtn]);
+            applyDynamicClasses(['bg-white', 'text-black'], ['bg-transparent'], [productBtn]);
+
+            infoBtn.setAttribute('aria-selected', 'true');
+            productBtn.setAttribute('aria-selected', 'false');
+
+            // Hide/show relevant sections
+            aboutInfo.setAttribute('aria-hidden', 'false');
+            mainControls.setAttribute('aria-hidden', 'true');
+            mainPrice.setAttribute('aria-hidden', 'true');
+
+            bottleImg.classList.remove('bottle-center');
+            bottleImg.classList.add('bottle-move-left');
+            aboutInfo.classList.remove('hidden');
+            mainTitle.classList.add('hidden');
+            mainDesc.classList.add('hidden');
+            mainControls.classList.add('hidden');
+            mainPrice.classList.add('hidden');
+            flavorLabel.classList.add('hidden');
+            gridLeft.classList.remove('grid-fade-in');
+            gridRight.classList.add('grid-fade-in');
+
+            // Update title and content of about section
+            aboutInfoContent.innerHTML = products[currentProductIndex].about_info_content;
+
+            // Apply product-specific color to "About This" content
+            const currentTheme = products[currentProductIndex].theme_key;
+            const currentTextColorClass = themeColorMap[currentTheme].text_class;
+            applyDynamicClasses(Object.values(themeColorMap).map(t => t.text_class), [currentTextColorClass], [aboutInfoTitle, aboutInfoContent]);
+        }
+
+        function updateQuantityButtonStyles() {
+            const currentTheme = products[currentProductIndex].theme_key;
+            const currentTextColorClass = themeColorMap[currentTheme].text_class;
+            const currentBgColorClass = themeColorMap[currentTheme].bg_class; // The light background color for active quantity button
+
+            const allPossibleTextColors = Object.values(themeColorMap).map(t => t.text_class);
+            const allPossibleBgColors = Object.values(themeColorMap).map(t => t.bg_class);
+
+            [qty100Btn, qty250Btn, qty500Btn].forEach(el => {
+                // Remove all potential conflicting classes
+                el.classList.remove('bg-white', 'border', 'border-black', ...allPossibleTextColors, ...allPossibleBgColors);
+                // Apply default transparent background, current text color, and white border
+                el.classList.add('bg-transparent', currentTextColorClass, 'border', 'border-white/20', 'hover:bg-white/10', 'hover:backdrop-blur-md');
+                el.setAttribute('aria-pressed', 'false');
+                el.style.borderWidth = ''; // Reset inline style if any
+                el.style.borderColor = ''; // Reset inline style if any
+            });
+
+            let selectedBtn;
+            if (selectedQuantity === "500 ml") selectedBtn = qty500Btn;
+            else if (selectedQuantity === "250 ml") selectedBtn = qty250Btn;
+            else selectedBtn = qty100Btn;
+
+            // For the selected button, remove transparent bg and white border, add solid bg and specific text color
+            selectedBtn.classList.remove('bg-transparent', 'text-black', 'border', 'border-white/20', 'hover:bg-white/10', 'hover:backdrop-blur-md', ...allPossibleTextColors);
+            selectedBtn.classList.add('bg-white', currentTextColorClass); // Selected button gets white background, and themed text color
+            selectedBtn.setAttribute('aria-pressed', 'true');
+            selectedBtn.style.border = 'none'; // Ensure no border on the active button
+        }
+
+        function selectQty(quantity) {
+            selectedQuantity = quantity;
+            updateQuantityButtonStyles();
+            updatePrice();
+        }
+
+        function updatePrice() {
+            const price = products[currentProductIndex].prices[selectedQuantity];
+            priceDisplay.textContent = `$${price.toFixed(2)}`;
+        }
+
+        function showProduct(index) {
+            gridLeft.classList.remove('grid-fade-in');
+            gridRight.classList.remove('grid-fade-in');
+            bottleImg.classList.add('fade');
+            document.body.style.setProperty('--next-gradient', products[index].gradient);
+            document.body.classList.add('crossfade');
+
+            // Set dynamic theme colors for CSS variables
+            const currentTheme = products[index].theme_key;
+            const colors = themeColorMap[currentTheme];
+            if (colors) {
+                document.documentElement.style.setProperty('--brand-lime', colors.lime);
+                document.documentElement.style.setProperty('--brand-dark', colors.dark);
+            }
+
+            setTimeout(() => {
+                bottleImg.src = products[index].image;
+
+                mainTitle.textContent = products[index].title;
+                mainDesc.textContent = products[index].description;
+                flavorLabel.textContent = products[index].flavor;
+                aboutInfoContent.innerHTML = products[index].about_info_content;
+
+                const currentTextColorClass = colors.text_class;
+                const currentBgColorClass = colors.bg_class;
+                const allPossibleTextColors = Object.values(themeColorMap).map(t => t.text_class);
+                const allPossibleBgColors = Object.values(themeColorMap).map(t => t.bg_class);
+
+                // Apply text colors to main elements
+                applyDynamicClasses(allPossibleTextColors, [currentTextColorClass], [mainTitle, mainDesc, flavorLabel, priceDisplay, downArrow, aboutInfoTitle, aboutInfoContent]);
+
+                // Apply dynamic styles for buyNowBtn (white background, themed text color, dynamic border)
+                applyDynamicClasses(allPossibleTextColors.concat(allPossibleBgColors).concat(['bg-white', 'border-black']), ['bg-white', currentTextColorClass], [buyNowBtn]);
+                buyNowBtn.style.borderColor = colors.dark; // Set border color dynamically for buyNowBtn
+
+                updatePrice();
+                updateQuantityButtonStyles(); // Re-apply selected quantity styling with new color
+
+                if (aboutInfo.classList.contains('hidden')) {
+                    flavorLabel.textContent = products[index].flavor;
+                }
+
+                // Ensure image is loaded before showing it fully
+                bottleImg.onload = () => {
+                    bottleImg.classList.remove('fade');
+                    setTimeout(() => {
+                        gridLeft.classList.add('grid-fade-in');
+                        gridRight.classList.add('grid-fade-in');
+                    }, 100);
+                };
+                // If image is already cached, onload might not fire, so handle directly
+                if (bottleImg.complete && bottleImg.naturalHeight !== 0) {
+                     bottleImg.classList.remove('fade');
+                     setTimeout(() => {
+                        gridLeft.classList.add('grid-fade-in');
+                        gridRight.classList.add('grid-fade-in');
+                    }, 100);
+                }
+
+                setTimeout(() => {
+                    document.body.style.background = products[index].gradient;
+                    document.body.classList.remove('crossfade');
+                }, 600);
+            }, 400); // This timeout should match the bottleImg fade transition
+        }
+
+        // --- Cart Logic ---
+        function openCart() {
+            const userEmail = localStorage.getItem('userEmail'); // Standardized key
+            const userName = localStorage.getItem('userName'); // Standardized key
+
+            if (!userEmail) {
+                alert('Please register or login to view your cart.');
+                window.location.href = './register.html';
+                return;
+            }
+            cartUserNameEl.textContent = userName || 'Guest';
+            renderCart();
+            cartSidebar.classList.add('open');
+            cartSidebar.setAttribute('aria-hidden', 'false');
+        }
+
+        function closeCart() {
+            cartSidebar.classList.remove('open');
+            cartSidebar.setAttribute('aria-hidden', 'true');
+        }
+
+        function addToCart() {
+            const userEmail = localStorage.getItem('userEmail'); // Standardized key
+            if (!userEmail) {
+                alert('Please register or login to purchase.');
+                window.location.href = './register.html';
+                return;
+            }
+
+            const product = products[currentProductIndex];
+            const price = product.prices[selectedQuantity];
+            const cartItemId = product.id + '_' + selectedQuantity.replace(' ', '');
+
+            const existingItem = cart.find(item => item.id === cartItemId);
+
+            if (existingItem) {
+                existingItem.count++;
+            } else {
+                cart.push({
+                    id: cartItemId,
+                    product_name: product.flavor,
+                    image: product.image,
+                    quantity: selectedQuantity,
+                    price: price,
+                    count: 1
+                });
+            }
+            showNotification(product.flavor);
+            renderCart(); // Update cart display immediately after adding an item
+        }
+
+        function renderCart() {
+            cartItemsContainer.innerHTML = '';
+            if (cart.length === 0) {
+                cartItemsContainer.innerHTML = '<p class="text-gray-500 text-center">Your cart is empty.</p>';
+            } else {
+                cart.forEach(item => {
+                    const itemEl = document.createElement('div');
+                    itemEl.className = 'flex items-center justify-between p-2 border-b';
+                    itemEl.innerHTML = `
+                        <img src="${item.image}" alt="${item.product_name}" class="w-16 h-16 object-cover rounded-md">
+                        <div class="flex-grow mx-4">
+                            <p class="font-semibold">${item.product_name}</p>
+                            <p class="text-sm text-gray-500">${item.quantity}</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                           <button class="px-2 border rounded" onclick="updateCartQuantity('${item.id}', -1)" aria-label="Decrease quantity of ${item.product_name}">-</button>
+                           <span>${item.count}</span>
+                           <button class="px-2 border rounded" onclick="updateCartQuantity('${item.id}', 1)" aria-label="Increase quantity of ${item.product_name}">+</button>
+                        </div>
+                        <p class="font-bold w-20 text-right">$${(item.price * item.count).toFixed(2)}</p>
+                    `;
+                    cartItemsContainer.appendChild(itemEl);
+                });
+            }
+            updateCartSummary();
+        }
+
+        function updateCartQuantity(itemId, change) {
+            const itemIndex = cart.findIndex(item => item.id === itemId);
+            if (itemIndex > -1) {
+                cart[itemIndex].count += change;
+                if (cart[itemIndex].count <= 0) {
+                    cart.splice(itemIndex, 1);
+                }
+            }
+            renderCart();
+        }
+
+        function updateCartSummary() {
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.count), 0);
+            const taxes = subtotal * 0.05;
+            const total = subtotal + taxes;
+
+            subtotalPriceEl.textContent = `$${subtotal.toFixed(2)}`;
+            taxesPriceEl.textContent = `$${taxes.toFixed(2)}`;
+            totalPriceEl.textContent = `$${total.toFixed(2)}`;
+        }
+
+        async function handleConfirmOrder() {
+            const userEmail = localStorage.getItem('userEmail'); // Standardized key
+            if (!userEmail) {
+                alert('You must be logged in to place an order.');
+                window.location.href = './register.html';
+                return;
+            }
+            if (cart.length === 0) {
+                alert("Your cart is empty. Please add items before confirming your order.");
+                return;
+            }
+
+            const orderData = {
+                user_email: userEmail,
+                items: cart.map(item => ({
+                    product_name: item.product_name,
+                    quantity: item.quantity,
+                    price: item.price,
+                    count: item.count
+                }))
+            };
+
+            try {
+                const res = await fetch(`${backendUrl}/purchase`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(orderData)
+                });
+
+                if (!res.ok) {
+                    const errorData = await res.json();
+                    throw new Error(errorData.detail || "Purchase failed");
+                }
+
+                const data = await res.json();
+                console.log(data.message);
+
+                // On successful order
+                cart = [];
+                closeCart();
+                orderConfirmationPopup.classList.remove('hidden');
+                orderConfirmationPopup.setAttribute('aria-hidden', 'false');
+
+            } catch (error) {
+                console.error("Purchase failed:", error);
+                alert("There was an error with your purchase. Please try again. " + error.message);
+            }
+        }
+
+        // Function to show a new, unique notification
+        function showNotification(productName) {
+            const newNotification = document.createElement('div');
+            newNotification.className = 'cart-item-notification';
+            newNotification.innerHTML = `<span>"${productName}" added to cart!</span>`;
+            notificationContainer.appendChild(newNotification);
+
+            // Trigger reflow to ensure transition plays
+            newNotification.offsetWidth;
+
+            newNotification.classList.add('show');
+
+            // Automatically remove after 3 seconds with a collapse animation
+            setTimeout(() => {
+                newNotification.classList.remove('show');
+                newNotification.style.maxHeight = '0';
+                newNotification.style.paddingTop = '0';
+                newNotification.style.paddingBottom = '0';
+                newNotification.style.marginBottom = '0';
+                newNotification.style.opacity = '0';
+                newNotification.style.overflow = 'hidden';
+
+                setTimeout(() => {
+                    if (newNotification.parentNode === notificationContainer) {
+                        notificationContainer.removeChild(newNotification);
+                    }
+                }, 300); // Match transition duration for collapse
+            }, 3000); // Notification stays visible for 3 seconds
+        }
+
+        // --- Event Listeners ---
+        productBtn.addEventListener('click', showProductSection);
+        infoBtn.addEventListener('click', showAboutSection);
+        qty500Btn.addEventListener('click', () => selectQty("500 ml"));
+        qty250Btn.addEventListener('click', () => selectQty("250 ml"));
+        qty100Btn.addEventListener('click', () => selectQty("100 ml"));
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === "ArrowDown") {
+                currentProductIndex = (currentProductIndex + 1) % products.length;
+                showProduct(currentProductIndex);
+            }
+            if (e.key === "ArrowUp") {
+                currentProductIndex = (currentProductIndex - 1 + products.length) % products.length;
+                showProduct(currentProductIndex);
+            }
+        });
+        bottleImg.addEventListener('wheel', (e) => {
+            e.preventDefault(); // Prevent page scroll
+            if (e.deltaY > 0) {
+                currentProductIndex = (currentProductIndex + 1) % products.length;
+            } else {
+                currentProductIndex = (currentProductIndex - 1 + products.length) % products.length;
+            }
+            showProduct(currentProductIndex);
+        });
+
+        buyNowBtn.addEventListener('click', addToCart);
+        cartBtn.addEventListener('click', openCart);
+        closeCartBtn.addEventListener('click', closeCart);
+        confirmOrderBtn.addEventListener('click', handleConfirmOrder);
+        closePopupBtn.addEventListener('click', () => {
+            orderConfirmationPopup.classList.add('hidden');
+            orderConfirmationPopup.setAttribute('aria-hidden', 'true');
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Authentication Status Check ---
+            const backendUrl = window.BACKEND_API_URL;
+            function checkLoginStatus() {
+                const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true'; // Standardized key
+                const userName = localStorage.getItem('userName'); // Standardized key
+                const userEmail = localStorage.getItem('userEmail'); // Standardized key
+
+                if (isLoggedIn && userName && userEmail) {
+                    // User is considered logged in
+                    userIconLink.href = "#"; // Prevent navigation if logged in
+                    userIconLink.removeEventListener('click', redirectToRegister); // Ensure old listener is removed
+                    userIconLink.addEventListener('click', toggleUserDropdown); // Add dropdown toggle listener
+
+                    profileLink.style.display = 'block'; // Show profile link
+                    profileLink.onclick = (e) => { e.preventDefault(); openProfileModal(); };
+                    profileLink.setAttribute('aria-hidden', 'false');
+
+                    logoutLink.style.display = 'block'; // Show logout link
+                    logoutLink.onclick = (e) => { e.preventDefault(); handleLogout(); };
+                    logoutLink.setAttribute('aria-hidden', 'false');
+
+                    // Set initial aria-expanded state
+                    userIconLink.setAttribute('aria-expanded', userDropdown.classList.contains('active') ? 'true' : 'false');
+
+                } else {
+                    // User is not logged in
+                    userIconLink.href = "./register.html"; // Redirect to the registration page
+                    // Ensure redirectToRegister is attached if not logged in
+                    userIconLink.removeEventListener('click', toggleUserDropdown); // Remove dropdown toggle listener
+                    userIconLink.addEventListener('click', redirectToRegister); // Add direct link functionality
+
+                    profileLink.style.display = 'none'; // Hide profile link
+                    profileLink.onclick = null;
+                    profileLink.setAttribute('aria-hidden', 'true');
+
+                    logoutLink.style.display = 'none'; // Hide logout link
+                    logoutLink.onclick = null;
+                    logoutLink.setAttribute('aria-hidden', 'true');
+
+                    userDropdown.classList.remove('active'); // Ensure dropdown is hidden
+                    userIconLink.setAttribute('aria-expanded', 'false');
+                }
+            }
+
+            function redirectToRegister(event) {
+                // Default link behavior is ./register.html
+                // If you wanted to do something specific before redirecting, add it here.
+            }
+
+            function toggleUserDropdown(event) {
+                event.preventDefault(); // Prevent default link behavior for '#'
+                userDropdown.classList.toggle('active');
+                userIconLink.setAttribute('aria-expanded', userDropdown.classList.contains('active') ? 'true' : 'false');
+            }
+
+            function handleLogout() {
+                localStorage.removeItem('isLoggedIn'); // Standardized key
+                localStorage.removeItem('userEmail'); // Standardized key
+                localStorage.removeItem('userName'); // Standardized key
+                // Clean up any legacy keys
+                localStorage.removeItem('juice_user'); //
+                localStorage.removeItem('juice_username'); //
+                localStorage.removeItem('accessToken'); //
+
+                userDropdown.classList.remove('active');
+                userIconLink.setAttribute('aria-expanded', 'false');
+
+                // Show logout confirmation modal
+                logoutModal.style.display = 'flex';
+                logoutModal.setAttribute('aria-hidden', 'false');
+            }
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', (event) => {
+                const userIconContainer = document.querySelector('.user-icon-container');
+                // Check if the click is outside both the user icon container and the dropdown
+                if (userIconContainer && !userIconContainer.contains(event.target) && userDropdown && !userDropdown.contains(event.target)) {
+                    userDropdown.classList.remove('active');
+                    userIconLink.setAttribute('aria-expanded', 'false');
+                }
+            });
+
+            // --- Profile Modal Functions ---
+            async function openProfileModal() {
+                const userEmail = localStorage.getItem('userEmail'); // Standardized key
+                const userName = localStorage.getItem('userName'); // Standardized key
+
+                if (!userEmail) {
+                    alert('Please log in to view your profile.');
+                    return;
+                }
+
+                profileUserName.textContent = userName || 'N/A';
+                profileUserEmail.textContent = userEmail;
+                pastOrdersList.innerHTML = '<p class="text-gray-500">Loading past orders...</p>';
+
+                try {
+                    const response = await fetch(`${backendUrl}/orders/${userEmail}`);
+                    if (!response.ok) {
+                        // Attempt to parse error message from response body
+                        const errorText = await response.text();
+                        try {
+                            const errorJson = JSON.parse(errorText);
+                            throw new Error(errorJson.detail || `HTTP error! status: ${response.status}`);
+                        } catch {
+                            throw new Error(`HTTP error! status: ${response.status}: ${errorText}`);
+                        }
+                    }
+                    const orders = await response.json();
+
+                    if (orders.length === 0) {
+                        pastOrdersList.innerHTML = '<p class="text-gray-500">No past orders found.</p>';
+                    } else {
+                        pastOrdersList.innerHTML = '';
+                        orders.forEach(order => {
+                            const orderItem = document.createElement('div');
+                            orderItem.className = 'order-item';
+                            orderItem.innerHTML = `
+                                <p><strong>Product:</strong> ${order.product_name} (${order.quantity})</p>
+                                <p><strong>Price:</strong> $${order.price.toFixed(2)}</p>
+                                <p><strong>Count:</strong> ${order.count || 1}</p>
+                                <p class="text-sm text-gray-500">Ordered on: ${new Date(order.order_date).toLocaleString()}</p>
+                            `;
+                            pastOrdersList.appendChild(orderItem);
+                        });
+                    }
+                } catch (error) {
+                    console.error("Failed to fetch past orders:", error);
+                    pastOrdersList.innerHTML = `<p class="text-red-500">Error loading orders: ${error.message}. Please try again.</p>`;
+                }
+
+                profileModal.style.display = 'flex';
+                profileModal.setAttribute('aria-hidden', 'false');
+                userDropdown.classList.remove('active'); // Close dropdown when modal opens
+                userIconLink.setAttribute('aria-expanded', 'false');
+            }
+
+            function closeProfileModal() {
+                profileModal.style.display = 'none';
+                profileModal.setAttribute('aria-hidden', 'true');
+            }
+
+            closeProfileModalBtn.addEventListener('click', closeProfileModal);
+
+            window.addEventListener('click', (event) => {
+                if (event.target === profileModal) {
+                    closeProfileModal();
+                }
+            });
+
+            // --- Logout Modal Functions ---
+            function closeLogoutModalAndRedirect() {
+                logoutModal.style.display = 'none';
+                logoutModal.setAttribute('aria-hidden', 'true');
+                window.location.href = "./index.html"; // Redirect to home after logout, not register
+            }
+
+            closeLogoutModalBtn.addEventListener('click', closeLogoutModalAndRedirect);
+            logoutModalOkBtn.addEventListener('click', closeLogoutModalAndRedirect);
+
+            window.addEventListener('click', (event) => {
+                if (event.target === logoutModal) {
+                    closeLogoutModalAndRedirect();
+                }
+            });
+
+            // Initial check on page load
+            checkLoginStatus(); // Call this when the page loads
+
+            // --- Initial Setup (original product display) ---
+            showProduct(currentProductIndex);
+            showProductSection();
+            selectQty("500 ml"); // Initialize with 500ml selected
+        });
+    </script>
+</body>
+</html>

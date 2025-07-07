@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JUICE - Our Essence</title>
+    <meta name="description" content="Explore the core of Juice: our unique story, unwavering mission, inspiring vision, and deeply held values.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.cdnfonts.com/css/beyonders" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+    <style>
+        /* Custom CSS Variables - Can be mapped to Tailwind config or used directly with arbitrary values where needed */
+        :root {
+            --primary-dark-green: #0F4B38;
+            --secondary-gold: #C4A77D;
+            --light-cream: #F8F4EA;
+            --text-dark: #2C3E50;
+            --text-light: #F0F0F0;
+            --accent-green-light: #A2E633;
+            --accent-green-dark: #7ce633;
+            --bg-gradient-start: #e0f2f7;
+            --bg-gradient-end: #d1e7ed;
+        }
+
+        /* Applying custom fonts */
+        .font-outfit {
+            font-family: 'Outfit', sans-serif;
+        }
+        .font-beyonders {
+            font-family: 'Beyonders', sans-serif;
+        }
+
+        /* Specific custom styles that are hard to replicate purely with Tailwind classes
+           or require pseudo-elements/complex animations.
+           In a real project, these might be extended in tailwind.config.js or handled with PostCSS.
+        */
+
+        /* Hero Section - Animated Background bubbles (pseudo-elements) */
+        .hero-creative::before, .hero-creative::after {
+            content: '';
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.08); /* Light, subtle bubbles */
+            animation: float 20s infinite ease-in-out;
+            z-index: -1;
+        }
+        .hero-creative::before {
+            width: 150px; height: 150px;
+            top: 10%; left: 15%;
+            animation-delay: 0s;
+        }
+        .hero-creative::after {
+            width: 200px; height: 200px;
+            bottom: 5%; right: 20%;
+            animation-delay: 5s;
+        }
+        @keyframes float {
+            0% { transform: translateY(0) translateX(0) scale(1); opacity: 0.08; }
+            50% { transform: translateY(-20px) translateX(10px) scale(1.05); opacity: 0.12; }
+            100% { transform: translateY(0) translateX(0) scale(1); opacity: 0.08; }
+        }
+
+        /* Hero text animations */
+        @keyframes textPopIn {
+            to { opacity: 1; transform: scale(1); }
+        }
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+        .animate-text-pop-in {
+            animation: textPopIn 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+        }
+        .animate-fade-in-delay {
+            animation: fadeIn 2s ease-out 0.5s forwards;
+        }
+
+        /* Section Title underline (pseudo-element) */
+        .section-title-creative::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: 0;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 10px;
+            background: linear-gradient(to right, var(--accent-green-light), var(--accent-green-dark));
+            border-radius: 5px;
+        }
+
+        /* Story Image tilt */
+        .story-image-diagonal {
+            transform: rotate(5deg);
+            transition: transform 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55), box-shadow 0.8s ease-out;
+        }
+        .story-image-diagonal:hover {
+            transform: rotate(0deg) scale(1.02);
+        }
+
+        /* Value Item accent bar (pseudo-element) */
+        .value-flowing-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 10px;
+            background: linear-gradient(to right, var(--accent-green-light), var(--accent-green-dark));
+            transition: height 0.3s ease;
+        }
+        .value-flowing-item:hover::before {
+            height: 20px;
+        }
+
+        /* Scroll reveal animation */
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(80px); /* Larger initial translation */
+            transition: opacity 1.5s cubic-bezier(0.2, 0.8, 0.2, 1), transform 1.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        .scroll-reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-dark-green': '#0F4B38',
+                        'secondary-gold': '#C4A77D',
+                        'light-cream': '#F8F4EA',
+                        'text-dark': '#2C3E50',
+                        'text-light': '#F0F0F0',
+                        'accent-green-light': '#A2E633',
+                        'accent-green-dark': '#7ce633',
+                        'bg-gradient-start': '#e0f2f7',
+                        'bg-gradient-end': '#d1e7ed',
+                    },
+                    fontFamily: {
+                        outfit: ['Outfit', 'sans-serif'],
+                        beyonders: ['Beyonders', 'sans-serif'],
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0) translateX(0) scale(1)', opacity: '0.08' },
+                            '50%': { transform: 'translateY(-20px) translateX(10px) scale(1.05)', opacity: '0.12' },
+                        },
+                        textPopIn: {
+                            to: { opacity: '1', transform: 'scale(1)' },
+                        },
+                        fadeIn: {
+                            to: { opacity: '1' },
+                        }
+                    },
+                    animation: {
+                        float: 'float 20s infinite ease-in-out',
+                        'text-pop-in': 'textPopIn 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards',
+                        'fade-in-delay': 'fadeIn 2s ease-out 0.5s forwards',
+                    }
+                },
+            }
+        }
+    </script>
+</head>
+<body class="antialiased bg-light-cream text-text-dark min-h-screen flex flex-col font-outfit">
+    <header class="sticky top-0 z-30 flex justify-between items-center py-5 px-6 text-black backdrop-blur-md transition-colors duration-300">
+        <div class="flex items-center space-x-4">
+            <a class="text-md font-beyonders font-semibold text-black" href="./index.html">
+                <img class="w-20" src="./assets/juicee_logo.png" alt="">
+            </a>
+        </div>
+
+        <nav class="flex items-center space-x-4 sm:space-x-10 text-primary-dark-green text-lg flex-wrap justify-center" aria-label="Main navigation">
+            <a href="./index.html" class="transition-colors duration-200 hover:text-secondary-gold">Home</a>
+            <a href="./about.html" class="transition-colors duration-200 hover:text-secondary-gold">About</a>
+            <a href="./product.html" class="transition-colors duration-200 hover:text-secondary-gold">Our Product</a>
+        </nav>
+
+        <div class="flex items-center relative group">
+            
+        </div>
+    </header>
+
+    <main class="flex-grow">
+        <section class="hero-creative h-[90vh] bg-[url('./assets/bg.png')] bg-cover bg-center relative overflow-hidden flex flex-col items-center justify-center text-white text-center px-6 z-0">
+            <div class="flex flex-col items-center justify-center h-full text-center -mt-40">
+                <h1 class="text-6xl md:text-9xl font-black leading-none animate-text-pop-in opacity-0 translate-y-0 scale-90">The Essence of Juice</h1>
+                <p class="text-xl md:text-3xl font-light max-w-2xl animate-fade-in-delay opacity-0">Crafting pure, vibrant nourishment from nature's finest. Discover our story.</p>
+            </div>
+        </section>
+
+        <section class="story-diagonal-section scroll-reveal rounded-3xl bg-primary-dark-green text-text-light py-20 px-10 relative overflow-hidden my-24 mx-10 z-10">
+            <h2 class="section-title-creative text-text-light text-5xl md:text-7xl font-extrabold text-center mb-20 relative inline-block leading-none pb-4">Our Refreshing Journey</h2>
+            <div class="flex flex-col items-center max-w-screen-lg mx-auto gap-12 lg:flex-row lg:justify-between lg:items-start">
+                <img src="https://placehold.co/600x400/C4A77D/0F4B38?text=Our+Story" alt="Our Story: Fresh Ingredients and Process" class="story-image-diagonal w-full max-w-xl rounded-3xl shadow-2xl border-4 border-secondary-gold lg:w-2/5 lg:-ml-12">
+                <div class="story-text-diagonal w-full p-8 text-center bg-white/10 rounded-3xl shadow-lg lg:w-3/5 lg:-mr-12 lg:text-left">
+                    <p class="mb-6 text-lg">
+                        Juice didn't start in a boardroom; it began in a vibrant, sun-drenched garden, with a simple revelation: the purest flavors and most potent nutrients come directly from nature. We envisioned a world where truly healthy, delicious beverages were not a luxury, but an everyday joy.
+                    </p>
+                    <p class="text-lg">
+                        Our founders, driven by a shared passion for wellness and sustainable living, embarked on a mission to bottle the essence of freshness. From meticulously sourcing the finest organic produce to perfecting our cold-press techniques, every step of our journey is infused with dedication and care. We believe in transparency, integrity, and the power of nature to nourish and revitalize. This isn't just about juice; it's about a lifestyle, a commitment to your well-being, and a celebration of the earth's bounty. Join us as we continue to grow, explore, and share the gift of pure, liquid vitality.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="mv-intersect-section scroll-reveal rounded-3xl bg-gradient-to-br from-bg-gradient-start to-bg-gradient-end py-32 px-6 relative overflow-hidden my-24 mx-10 z-0">
+            <h2 class="section-title-creative text-primary-dark-green text-5xl md:text-7xl font-extrabold text-center mb-20 relative inline-block leading-none pb-6 mx-auto">Our Guiding Principles</h2>
+            <div class="flex flex-col items-center space-x-10 max-w-4xl mx-auto md:flex-row md:justify-center md:gap-8">
+                <div class="mv-intersect-card bg-white rounded-full w-72 h-72 flex flex-col items-center justify-center text-center shadow-lg transition-all duration-500 border-4 border-accent-green-light hover:scale-105 hover:-rotate-3 hover:shadow-xl hover:border-secondary-gold relative z-10">
+                    <h3 class="text-3xl font-bold text-primary-dark-green mb-3">Our Mission</h3>
+                    <p class="text-base text-text-dark px-6">To empower individuals with delicious, nutrient-packed juices for a vibrant, healthier lifestyle.</p>
+                </div>
+                <div class="mv-intersect-card bg-white rounded-full w-72 h-72 flex flex-col items-center justify-center text-center shadow-lg transition-all duration-500 border-4 border-accent-green-light hover:scale-105 hover:-rotate-3 hover:shadow-xl hover:border-secondary-gold relative z-10">
+                    <h3 class="text-3xl font-bold text-primary-dark-green mb-3">Our Vision</h3>
+                    <p class="text-base text-text-dark px-6">To cultivate a global community embracing natural wellness, making Juice synonymous with pure living.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="pt-18 pb-24 container mx-auto scroll-reveal px-4">
+            <h2 class="section-title-creative text-primary-dark-green text-5xl md:text-7xl font-extrabold text-center mb-20 ml-16 relative inline-block leading-none pb-4 mx-auto">Values We Live By</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 max-w-screen-xl mx-auto">
+                <div class="value-flowing-item bg-white rounded-3xl p-8 text-center shadow-md relative overflow-hidden transition-all duration-400 flex flex-col items-center justify-start min-h-64 hover:-translate-y-2 hover:shadow-lg hover:bg-light-cream">
+                    <svg class="value-icon-flowing w-16 h-16 text-primary-dark-green mb-4 mt-4 transition-transform duration-300 hover:scale-110" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+                    </svg>
+                    <h3 class="text-2xl font-bold text-primary-dark-green mb-3">Purity</h3>
+                    <p class="text-base text-text-dark opacity-90">Unwavering commitment to 100% natural, unadulterated ingredients.</p>
+                </div>
+                <div class="value-flowing-item bg-white rounded-3xl p-8 text-center shadow-md relative overflow-hidden transition-all duration-400 flex flex-col items-center justify-start min-h-64 hover:-translate-y-2 hover:shadow-lg hover:bg-light-cream">
+                    <svg class="value-icon-flowing w-16 h-16 text-primary-dark-green mb-4 mt-4 transition-transform duration-300 hover:scale-110" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0016.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 002 8.5c0 2.3 1.51 4.04 3 5.5L12 22z"></path>
+                    </svg>
+                    <h3>Health</h3>
+                    <p>Dedicated to promoting well-being through nutritious beverages.</p>
+                </div>
+                <div class="value-flowing-item bg-white rounded-3xl p-8 text-center shadow-md relative overflow-hidden transition-all duration-400 flex flex-col items-center justify-start min-h-64 hover:-translate-y-2 hover:shadow-lg hover:bg-light-cream">
+                    <svg class="value-icon-flowing w-16 h-16 text-primary-dark-green mb-4 mt-4 transition-transform duration-300 hover:scale-110" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    </svg>
+                    <h3>Sustainability</h3>
+                    <p>Responsibility towards the planet, from sourcing to packaging.</p>
+                </div>
+                <div class="value-flowing-item bg-white rounded-3xl p-8 text-center shadow-md relative overflow-hidden transition-all duration-400 flex flex-col items-center justify-start min-h-64 hover:-translate-y-2 hover:shadow-lg hover:bg-light-cream">
+                    <svg class="value-icon-flowing w-16 h-16 text-primary-dark-green mb-4 mt-4 transition-transform duration-300 hover:scale-110" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                    </svg>
+                    <h3>Transparency</h3>
+                    <p>Open about our ingredients, processes, and sourcing.</p>
+                </div>
+                <div class="value-flowing-item bg-white rounded-3xl p-8 text-center shadow-md relative overflow-hidden transition-all duration-400 flex flex-col items-center justify-start min-h-64 hover:-translate-y-2 hover:shadow-lg hover:bg-light-cream">
+                    <svg class="value-icon-flowing w-16 h-16 text-primary-dark-green mb-4 mt-4 transition-transform duration-300 hover:scale-110" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 20V10M18.5 14.5L12 8l-6.5 6.5M12 22a7 7 0 100-14 7 7 0 000 14z"></path>
+                    </svg>
+                    <h3>Innovation</h3>
+                    <p>Constantly exploring new flavors and healthy combinations.</p>
+                </div>
+                <div class="value-flowing-item bg-white rounded-3xl p-8 text-center shadow-md relative overflow-hidden transition-all duration-400 flex flex-col items-center justify-start min-h-64 hover:-translate-y-2 hover:shadow-lg hover:bg-light-cream">
+                    <svg class="value-icon-flowing w-16 h-16 text-primary-dark-green mb-4 mt-4 transition-transform duration-300 hover:scale-110" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M17 18a2 2 0 00-2-2H9a2 2 0 00-2 2M12 12a4 4 0 100-8 4 4 0 000 8zM21 21v-2a4 4 0 00-3-3.87m-9-1.13H3V21"></path>
+                    </svg>
+                    <h3>Community</h3>
+                    <p>Building connections and supporting local initiatives.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-[#1a1a1a] text-gray-200 py-12 mt-auto font-outfit">
+        <div class="container mx-auto px-6 text-center md:text-left">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-center justify-between">
+                <div class="mb-6 md:mb-0">
+                    <a class="text-md beyonders-font font-semibold text-black" href="./index.html">
+                        <img class="w-36" src="./assets/juicee_white.png" alt="">
+                    </a>
+                    <p class="text-sm mt-2 max-w-xs mx-auto md:mx-0">Sip nature's best. Pure, fresh, and revitalizing juices for a healthier you.</p>
+                </div>
+
+                <nav class="flex flex-col space-y-3 mb-6 md:mb-0">
+                    <h4 class="text-lg font-semibold mb-2">Quick Links</h4>
+                    <a href="./home.html" class="transition-colors duration-300 hover:text-secondary-gold hover:underline">Home</a>
+                    <a href="./about.html" class="transition-colors duration-300 hover:text-secondary-gold hover:underline">About Us</a>
+                    <a href="./index.html" class="transition-colors duration-300 hover:text-secondary-gold hover:underline">Our Products</a>
+                    <a href="#" class="transition-colors duration-300 hover:text-secondary-gold hover:underline">Contact</a>
+                </nav>
+
+                <div class="text-center md:text-right">
+                    <h4 class="text-lg font-semibold mb-3">Connect With Us</h4>
+                    <div class="flex justify-center md:justify-end space-x-4 mb-4">
+                        <a href="#" aria-label="Youtube" class="transition-transform duration-200 hover:-translate-y-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-youtube" viewBox="0 0 16 16">
+                            <path d="M8.051 1.999h.089c.822.003 4.987.033 6.11.335a2.01 2.01 0 0 1 1.415 1.42c.101.38.172.883.22 1.402l.01.104.022.26.008.104c.065.914.073 1.77.074 1.957v.075c-.001.194-.01 1.108-.082 2.06l-.008.105-.009.104c-.05.572-.124 1.14-.235 1.558a2.01 2.01 0 0 1-1.415 1.42c-1.16.312-5.569.334-6.18.335h-.142c-.309 0-1.587-.006-2.927-.052l-.17-.006-.087-.004-.171-.007-.171-.007c-1.11-.049-2.167-.128-2.654-.26a2.01 2.01 0 0 1-1.415-1.419c-.111-.417-.185-.986-.235-1.558L.09 9.82l-.008-.104A31 31 0 0 1 0 7.68v-.123c.002-.215.01-.958.064-1.778l.007-.103.003-.052.008-.104.022-.26.01-.104c.048-.519.119-1.023.22-1.402a2.01 2.01 0 0 1 1.415-1.42c.487-.13 1.544-.21 2.654-.26l.17-.007.172-.006.086-.003.171-.007A100 100 0 0 1 7.858 2zM6.4 5.209v4.818l4.157-2.408z"/>
+                            </svg>
+                        </a>
+                        <a href="#" aria-label="Twitter" class="transition-transform duration-200 hover:-translate-y-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-twitter-x" viewBox="0 0 16 16">
+                            <path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865z"/>
+                            </svg>
+                        </a>
+                        <a href="#" aria-label="Instagram" class="transition-transform duration-200 hover:-translate-y-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-instagram" viewBox="0 0 16 16">
+                            <path d="M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.42a3.9 3.9 0 0 0-1.417.923A3.9 3.9 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.7.01 5.555 0 5.827 0 8.001c0 2.172.01 2.444.048 3.297.04.852.174 1.433.372 1.942.205.526.478.972.923 1.417.444.445.89.719 1.416.923.51.198 1.09.333 1.942.372C5.555 15.99 5.827 16 8 16s2.444-.01 3.298-.048c.851-.04 1.434-.174 1.943-.372a3.9 3.9 0 0 0 1.416-.923c.445-.445.718-.891.923-1.417.197-.509.332-1.09.372-1.942C15.99 10.445 16 10.173 16 8s-.01-2.445-.048-3.299c-.04-.851-.175-1.433-.372-1.941a3.9 3.9 0 0 0-.923-1.417A3.9 3.9 0 0 0 13.24.42c-.51-.198-1.092-.333-1.943-.372C10.443.01 10.172 0 7.998 0zm-.717 1.442h.718c2.136 0 2.389.007 3.232.046.78.035 1.204.166 1.486.275.373.145.64.319.92.599s.453.546.598.92c.11.281.24.705.275 1.485.039.843.047 1.096.047 3.231s-.008 2.389-.047 3.232c-.035.78-.166 1.203-.275 1.485a2.5 2.5 0 0 1-.599.919c-.28.28-.546.453-.92.598-.28.11-.704.24-1.485.276-.843.038-1.096.047-3.232.047s-2.39-.009-3.233-.047c-.78-.036-1.203-.166-1.485-.276a2.5 2.5 0 0 1-.92-.598 2.5 2.5 0 0 1-.6-.92c-.109-.281-.24-.705-.275-1.485-.038-.843-.046-1.096-.046-3.233s.008-2.388.046-3.231c.036-.78.166-1.204.276-1.486.145-.373.319-.64.599-.92s.546-.453.92-.598c.282-.11.705-.24 1.485-.276.738-.034 1.024-.044 2.515-.045zm4.988 1.328a.96.96 0 1 0 0 1.92.96.96 0 0 0 0-1.92m-4.27 1.122a4.109 4.109 0 1 0 0 8.217 4.109 4.109 0 0 0 0-8.217m0 1.441a2.667 2.667 0 1 1 0 5.334 2.667 2.667 0 0 1 0-5.334"/>
+                            </svg>
+                        </a>
+                    </div>
+                    <p class="text-sm">Email: info@juice.com</p>
+                    <p class="text-sm">Phone: +1 (555) 123-4567</p>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-700 pt-6 mt-8 text-sm text-center">
+                <p>&copy; 2024 Juice. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        window.BACKEND_API_URL = '__BACKEND_API_URL__';
+        document.addEventListener('DOMContentLoaded', () => {
+            const userIconContainer = document.querySelector('.group'); // Changed to parent group
+            
+
+            const backendUrl = window.BACKEND_API_URL;
+
+            // --- Utility Functions for Modals ---
+            function showModal(modalElement) {
+                modalElement.dataset.show = 'true';
+                modalElement.classList.remove('hidden');
+            }
+
+            function hideModal(modalElement) {
+                modalElement.dataset.show = 'false';
+                // Use setTimeout to allow transition to complete before hiding
+                setTimeout(() => {
+                    if (modalElement.dataset.show === 'false') {
+                        modalElement.classList.add('hidden');
+                    }
+                }, 300); // Must match CSS transition-duration
+            }
+
+            // --- Scroll Reveal Animation Logic ---
+            const scrollRevealElements = document.querySelectorAll('.scroll-reveal');
+
+            const observerOptions = {
+                root: null, // viewport
+                rootMargin: '0px',
+                threshold: 0.15 // 15% of element visible to trigger
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target); // Stop observing once visible
+                    }
+                });
+            }, observerOptions);
+
+            scrollRevealElements.forEach(el => {
+                observer.observe(el);
+            });
+
+
+            // Initial check on page load
+            checkLoginStatus();
+        });
+    </script>
+</body>
+</html>

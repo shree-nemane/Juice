@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JUICE - Home</title>
+    <meta name="description" content="Discover natural and healthy juice options. Explore our products, benefits, and customer testimonials.">
+
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+
+    <link href="https://fonts.cdnfonts.com/css/beyonders" rel="stylesheet">
+    <link href="https://fonts.cdnfonts.com/css/noto-sans-display-2" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
+                
+
+    <style>
+        /* Define color variables for consistency */
+        :root {
+            --primary-dark-green: #0F4B38; /* Deep Forest Green */
+            --secondary-gold: #C4A77D;     /* Warm Gold/Tan */
+            --light-cream: #F8F4EA;        /* Light Cream */
+            --text-dark: #2C3E50;          /* Dark Grey for primary text */
+            --text-light: #F0F0F0;         /* Light Grey for light backgrounds */
+        }
+
+        .outfit-font {
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .beyonders-font {
+            font-family: 'Beyonders', sans-serif;
+        }
+
+        .noto-font {
+            font-family: 'Noto Sans Display', sans-serif;
+        }
+                                                
+        /* Added for dropdown */
+        .dropdown-content {
+            display: none; /* Initially hidden */
+            position: absolute;
+            background-color: var(--light-cream);
+            min-width: 120px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            right: 0; /* Align to the right of the parent */
+            border-radius: 8px;
+            overflow: hidden;
+            top: 100%; /* Position below the user icon */
+            margin-top: 5px; /* Small gap */
+        }
+
+        .dropdown-content a {
+            color: var(--text-dark);
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            text-align: left;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #e0e0e0; /* Lighter hover for dropdown items */
+        }
+
+        /* Show dropdown only when active class is present */
+        .dropdown-content.active {
+            display: block;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1000; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out; /* For fade effect */
+        }
+        .modal.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-content {
+            background-color: var(--light-cream);
+            margin: auto;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            width: 80%; /* Could be responsive */
+            max-width: 500px;
+            position: relative;
+            transform: translateY(20px); /* Start slightly below */
+            transition: transform 0.3s ease-out; /* For slide effect */
+            color: var(--text-dark);
+        }
+        .modal.show .modal-content {
+            transform: translateY(0);
+        }
+
+        .close-button {
+            color: #aaa;
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close-button:hover,
+        .close-button:focus {
+            color: var(--text-dark);
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .order-item {
+            border-bottom: 1px solid #eee;
+            padding: 10px 0;
+        }
+        .order-item:last-child {
+            border-bottom: none;
+        }
+
+        /* Fade-in for main content on load */
+        .fade-in-content {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1s ease-out, transform 1s ease-out;
+        }
+        .fade-in-content.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .tab-active {
+            border-bottom: 2px solid var(--primary-dark-green);
+            color: var(--primary-dark-green);
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+
+        .benefits-card {
+            border-radius: 1.5rem; /* Equivalent to Tailwind's rounded-3xl or custom large radius */
+            overflow: hidden; /* Ensures the image and content stay within rounded corners */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* Tailwind shadow-xl */
+        }
+
+        .benefit-item {
+            border-radius: 0.75rem; /* Equivalent to Tailwind's rounded-xl */
+            padding: 1rem 1.5rem; /* py-4 px-6 */
+            display: flex;
+            align-items: center;
+            color: var(--text-dark); /* Ensure text is readable */
+            background-color: var(--light-cream); /* Slightly transparent white for the background */
+            backdrop-filter: blur(5px); /* Optional: for a subtle frosted glass effect */
+        }
+        .benefit-item:not(:last-child) {
+            margin-bottom: 1rem; /* space-y-4 */
+        }
+
+        .testimonial-card {
+            border-radius: 1.5rem; /* For rounded-3xl effect */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-xl */
+            overflow: hidden; /* Ensures image corners are rounded */
+            background-color: var(--light-cream); /* Consistent background */
+            color: var(--text-dark); /* Consistent text color */
+        }
+        .verified-badge {
+            position: absolute;
+            top: 1rem; /* Adjust as needed */
+            right: 1rem; /* Adjust as needed */
+            background-color: var(--secondary-gold); /* Gold badge */
+            color: var(--primary-dark-green); /* Dark green text on gold */
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px; /* For full pill shape */
+            font-size: 0.75rem; /* text-xs */
+            font-weight: 600; /* font-semibold */
+            display: flex;
+            align-items: center;
+            gap: 0.25rem; /* space-x-1 */
+        }
+        .star-icon {
+            fill: var(--secondary-gold); /* Gold stars */
+        }
+
+        .faq-item {
+            border-radius: 0.75rem; /* rounded-xl */
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            background-color: var(--light-cream);
+            color: var(--text-dark);
+        }
+
+        .faq-item-expanded {
+            background-color: var(--light-cream); /* Slightly lighter green for expanded */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* subtle shadow */
+            border-color: var(--primary-dark-green);
+        }
+        .faq-item-collapsed {
+            background-color: var(--light-cream); /* white */
+            border-color: #E0E0E0; /* Lighter border for collapsed */
+        }
+        .faq-item p { /* Ensure text within FAQ is dark */
+            color: var(--text-dark);
+        }
+        /* New Footer Styles */
+        .footer-dark {
+            background-color: #1a1a1a; /* Dark background */
+            color: #e0e0e0; /* Light text */
+        }
+
+        .footer-logo {
+            font-size: 2.5rem; /* Larger logo text */
+            line-height: 1;
+        }
+
+        .footer-link {
+            transition: color 0.3s ease;
+        }
+
+        .footer-link:hover {
+            color: var(--secondary-gold);
+            text-decoration: underline;
+        }
+
+        .social-icon {
+            transition: transform 0.2s ease;
+        }
+
+        .social-icon:hover {
+            transform: translateY(-3px);
+        }
+
+    </style>
+
+</head>
+<body class="antialiased font-sans" style="background-color: var(--light-cream);">
+
+    <div id="mobileWarning" class="fixed inset-0 w-full h-full z-[2000] space-x-2 flex flex-col justify-center items-center bg-black text-white text-center py-3 text-base font-semibold hidden">
+        <h1 class="text-3xl font-bold">Open in Laptop only</h1>
+        <p class="text-lg">This website is best viewed on larger screens.</p>
+    </div>
+
+    <header class="sticky top-0 z-30 flex justify-between items-center py-4 px-6 text-black backdrop-blur-md transition-colors duration-300">
+        <div class="flex items-center space-x-4">
+            <a class="text-md beyonders-font font-semibold text-black" href="./index.html">
+                <img class="w-20" src="./assets/juicee_logo.png" alt="">
+            </a>
+        </div>
+
+        <div class="flex items-center space-x-4 sm:space-x-10 text-black text-lg flex-wrap justify-center">
+            <a href="./index.html" class="transition-colors duration-200 hover:text-secondary-gold">Home</a>
+            <a class="transition-colors duration-200 hover:text-secondary-gold" href="./about.html">About</a>
+            <a class="transition-colors duration-200 hover:text-secondary-gold" href="./product.html">Our Product</a>
+        </div>
+
+        <div class="flex items-center relative user-icon-container">
+            <div class="bg-white rounded-full p-2 transition duration-200 hover:backdrop-blur-md hover:bg-white/10 border border-white/20 shadow-lg active:scale-95">
+                <a id="userIconLink" href="./register.html"><img class="w-6" src="./assets/profile.png" alt="user profile icon"></a>
+            </div>
+            <div id="userDropdown" class="dropdown-content" aria-hidden="true">
+                <a href="#" id="profileLink">Profile</a>
+                <a href="#" id="logoutLink">Logout</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex items-center justify-evenly fade-in-content min-h-screen max-w-screen overflow-hidden">
+        <div class="relative left-1/4">
+            <img class="w-md transition-transform duration-300 " src="./assets/red_bottle.png" alt="Red juice bottle">
+        </div>
+        <div class="absolute text-rose-500 text-[130px] -translate-y-12 right-1/2 font-semibold beyonders-font text-center transition-transform duration-300 hover:scale-105">
+            JUICY <br> Juice
+        </div>
+    </div>
+
+    <div id="profileModal" class="modal" aria-hidden="true">
+        <div class="modal-content">
+            <span class="close-button" id="closeProfileModalBtn" role="button" aria-label="Close Profile Modal">&times;</span>
+            <h2 class="text-2xl font-bold mb-4">User Profile</h2>
+            <p class="mb-2">Name: <span id="profileUserName" class="font-semibold"></span></p>
+            <p class="mb-2">Email: <span id="profileUserEmail" class="font-semibold"></span></p>
+            <h3 class="text-xl font-bold mt-4 mb-2">Past Orders</h3>
+            <div id="pastOrdersList" class="max-h-60 overflow-y-auto border rounded p-2">
+                <p class="text-gray-500">No past orders found.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="logoutModal" class="modal" aria-hidden="true">
+        <div class="modal-content">
+            <span class="close-button" id="closeLogoutModalBtn" role="button" aria-label="Close Logout Modal">&times;</span>
+            <h2 class="text-2xl font-bold mb-4">Logged Out</h2>
+            <p>You have been successfully logged out.</p>
+            <button id="logoutModalOkBtn" class="mt-6 bg-primary-dark-green text-white py-2 px-6 rounded-md hover:opacity-90 active:scale-95">OK</button>
+        </div>
+    </div>
+
+    <div class="flex justify-center items-center flex-wrap gap-6 my-30 px-6 outfit-font">
+        <div class="bg-secondary-gold/90 backdrop-blur-md p-6 rounded-lg shadow-lg max-w-lg flex items-center space-x-4 ">
+            <img class="rounded-2xl w-40 bg-white" src="./assets/award1.jpeg" alt="Award for Best Juicy Selection">
+            <div class="text-primary-dark-green">
+                <h4 class="text-4xl font-semibold">Best Juicy Selection</h4>
+                <p>Awarded for excellence</p>
+            </div>
+        </div>
+
+        <div class="bg-primary-dark-green/90 backdrop-blur-md p-6 rounded-lg shadow-lg max-w-lg flex items-center space-x-4 ">
+            <img class="rounded-2xl w-30" src="./assets/award2.jpeg" alt="Award for Most Juicy Juice">
+            <div class="text-light-cream">
+                <h4 class="text-4xl font-semibold">Most Juicy Juice</h4>
+                <p>Awarded for supreme juiciness</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mx-auto px-4 py-8 max-w-5xl">
+        <h1 class="text-3xl font-bold text-center mb-10 text-text-dark">What's Inside?</h1>
+
+        <div class="flex justify-center space-x-6 mb-12 border-b border-gray-200">
+            <button class="py-3 px-4 text-primary-dark-green font-medium tab-active" data-tab="redBoost">Red Boost</button>
+            <button class="py-3 px-4 text-text-dark font-medium hover:text-primary-dark-green transition-colors duration-200" data-tab="tropicalGlow">Tropical Glow</button>
+            <button class="py-3 px-4 text-text-dark font-medium hover:text-primary-dark-green transition-colors duration-200" data-tab="berryStrong">Berry Strong</button>
+            <button class="py-3 px-4 text-text-dark font-medium hover:text-primary-dark-green transition-colors duration-200" data-tab="detoxDelight">Detox Delight</button>
+        </div>
+
+        <div id="featureCard" class="bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col lg:flex-row items-center p-6 mb-12">
+            <div class="lg:w-1/2 w-full flex justify-center p-4">
+                <img id="featureImage" src="./assets/orange_juice.jpeg" alt="Red Boost Juice" class="w-78 max-w-sm lg:max-w-full h-auto object-cover rounded-lg">
+            </div>
+            <div class="lg:w-1/2 w-full p-4 lg:pl-8 text-center lg:text-left">
+                <h2 id="featureTitle" class="text-3xl font-bold text-text-dark mb-4">Unleash Your Inner Vitality with Red Boost</h2>
+                <p id="featureDescription" class="text-lg text-gray-700 leading-relaxed">
+                    Our Red Boost juice is meticulously crafted with a powerful blend of antioxidant-rich berries and vibrant beetroots. It's designed to not only invigorate your senses but also support your body's natural defense mechanisms. Experience a surge of natural energy and a radiant glow, all from the goodness of nature. Perfect for kickstarting your day or a midday revitalization.
+                </p>
+                <ul class="mt-6 space-y-2 text-gray-700 text-left mx-auto lg:mx-0 max-w-md">
+                    <li class="flex items-center">
+                        <svg class="w-5 h-5 text-primary-dark-green mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                        <span>Real Fruit Powder: Pure, potent nutrients from nature.</span>
+                    </li>
+                    <li class="flex items-center">
+                        <svg class="w-5 h-5 text-primary-dark-green mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112.7 1h.6a1 1 0 011 1v3.974c.426.155.807.397 1.134.724a1 1 0 01.077 1.636l-2.693 2.692a1 1 0 00-.284.707v3.974a1 1 0 01-1 1h-.6a1 1 0 01-1-1v-3.974a1 1 0 00-.284-.707L6.2 7.34a1 1 0 01.077-1.636c.327-.327.708-.57 1.134-.724V2a1 1 0 011-1h.6zm-1.01 2h.6v.975a.999.999 0 00-.284.707L7.34 7.307a1 1 0 01-.077 1.636c-.327.327-.708.57-1.134.724v3.974a1 1 0 001 1h.6a1 1 0 001-1v-3.974a1 1 0 01.284-.707L12.7 7.307a1 1 0 01.077-1.636c-.327-.327-.708-.57-1.134-.724V2h-.6z" clip-rule="evenodd"></path>
+                    </svg>
+                    <span class="text-lg font-medium text-text-dark">Scientific Backing: Formulated for optimal benefits.</span>
+                    </li>
+                    <li class="flex items-center">
+                        <svg class="w-5 h-5 text-primary-dark-green mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.646l1.172-1.172a4 4 0 115.656 5.656L10 17.656l-6.828-6.828a4 4 0 010-5.656z" clip-rule="evenodd"></path>
+                    </svg>
+                    <span class="text-lg font-medium text-text-dark">No Added Sugar: Naturally sweet and wholesome.</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="benefits-card max-w-5xl min-h-2xl mx-auto my-10 flex flex-col lg:flex-row bg-white">
+        <div class="lg:w-1/2 w-full">
+            <img src="./assets/card.jpeg" alt="Three glasses of juice with fruits" class="w-full h-full object-cover">
+        </div>
+
+        <div class="lg:w-1/2 w-full bg-primary-dark-green p-8  flex flex-col justify-center">
+            <h2 class="text-6xl font-semibold mb-8 text-light-cream leading-tight">Why Choose Our Healthy Drink?</h2>
+
+            <div class="space-y-4">
+                <div class="benefit-item">
+                    <svg class="w-7 h-7 mr-4 text-secondary-gold" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                    </svg>
+                    <span class="text-lg font-medium text-text-dark">100% Natural Ingredients</span>
+                </div>
+
+                <div class="benefit-item">
+                    <svg class="w-7 h-7 mr-4 text-secondary-gold" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112.7 1h.6a1 1 0 011 1v3.974c.426.155.807.397 1.134.724a1 1 0 01.077 1.636l-2.693 2.692a1 1 0 00-.284.707v3.974a1 1 0 01-1 1h-.6a1 1 0 01-1-1v-3.974a1 1 0 00-.284-.707L6.2 7.34a1 1 0 01.077-1.636c.327-.327.708-.57 1.134-.724V2a1 1 0 011-1h.6zm-1.01 2h.6v.975a.999.999 0 00-.284.707L7.34 7.307a1 1 0 01-.077 1.636c-.327.327-.708.57-1.134.724v3.974a1 1 0 001 1h.6a1 1 0 001-1v-3.974a1 1 0 01.284-.707L12.7 7.307a1 1 0 01.077-1.636c-.327-.327-.708-.57-1.134-.724V2h-.6z" clip-rule="evenodd"></path>
+                    </svg>
+                    <span class="text-lg font-medium text-text-dark">Packed with vitamins and antioxidants</span>
+                </div>
+
+                <div class="benefit-item">
+                    <svg class="w-7 h-7 mr-4 text-secondary-gold" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.646l1.172-1.172a4 4 0 115.656 5.656L10 17.656l-6.828-6.828a4 4 0 010-5.656z" clip-rule="evenodd"></path>
+                    </svg>
+                    <span class="text-lg font-medium text-text-dark">Eco-friendly Packaging</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mx-auto my-30 px-4 max-w-6xl">
+        <div class="flex items-center justify-center text-secondary-gold mb-6">
+            <span class="text-text-dark font-semibold text-lg mr-2">4.9 out of 5</span>
+            <svg class="w-5 h-5 star-icon" aria-label="4.9 out of 5 stars" viewBox="0 0 20 20"><path d="M10 15.27L16.18 19l-1.64-7.03L20 7.24l-7.19-.61L10 0 7.19 6.63 0 7.24l5.46 4.73L3.82 19z"/></svg>
+            <svg class="w-5 h-5 star-icon" viewBox="0 0 20 20"><path d="M10 15.27L16.18 19l-1.64-7.03L20 7.24l-7.19-.61L10 0 7.19 6.63 0 7.24l5.46 4.73L3.82 19z"/></svg>
+            <svg class="w-5 h-5 star-icon" viewBox="0 0 20 20"><path d="M10 15.27L16.18 19l-1.64-7.03L20 7.24l-7.19-.61L10 0 7.19 6.63 0 7.24l5.46 4.73L3.82 19z"/></svg>
+            <svg class="w-5 h-5 star-icon" viewBox="0 0 20 20"><path d="M10 15.27L16.18 19l-1.64-7.03L20 7.24l-7.19-.61L10 0 7.19 6.63 0 7.24l5.46 4.73L3.82 19z"/></svg>
+            <svg class="w-5 h-5 star-icon" viewBox="0 0 20 20"><path d="M10 15.27L16.18 19l-1.64-7.03L20 7.24l-7.19-.61L10 0 7.19 6.63 0 7.24l5.46 4.73L3.82 19z"/></svg>
+        </div>
+
+        <h1 class="text-4xl font-bold text-center mb-10 text-text-dark">What People Are Saying</h1>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+            <div class="testimonial-card bg-white relative">
+                <img src="./assets/testimonial1.jpeg" alt="Person holding juice" class="w-full h-48 object-cover object-center">
+                <div class="verified-badge">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                    Verified
+                </div>
+                <div class="p-6">
+                    <div class="flex items-center text-secondary-gold mb-3">
+                        <svg class="w-4 h-4 star-icon" viewBox="0 0 20 20"><path d="M10 15.27L16.18 19l-1.64-7.03L20 7.24l-7.19-.61L10 0 7.19 6.63 0 7.24l5.46 4.73L3.82 19z"/></svg>
+                        <svg class="w-4 h-4 star-icon" viewBox="0 0 20 20"><path d="M10 15.27L16.18 19l-1.64-7.03L20 7.24l-7.19-.61L10 0 7.19 6.63 0 7.24l5.46 4.73L3.82 19z"/></svg>
+                        <svg class="w-4 h-4 star-icon" viewBox="0 0 20 20"><path d="M10 15.27L16.18 19l-1.64-7.03L20 7.24l-7.19-.61L10 0 7.19 6.63 0 7.24l5.46 4.73L3.82 19z"/></svg>
+                        <svg class="w-4 h-4 star-icon" viewBox="0 0 20 20"><path d="M10 15.27L16.18 19l-1.64-7.03L20 7.24l-7.19-.61L10 0 7.19 6.63 0 7.24l5.46 4.73L3.82 19z"/></svg>
+                        <svg class="w-4 h-4 star-icon" viewBox="0 0 20 20"><path d="M10 15.27L16.18 19l-1.64-7.03L20 7.24l-7.19-.61L10 0 7.19 6.63 0 7.24l5.46 4.73L3.82 19z"/></svg>
+                    </div>
+                    <p class="text-xl font-semibold text-text-dark mb-2">Sarah L.</p>
+                    <p class="text-gray-700 mb-4 text-base">
+                        "Ever since I started drinking Red Boost every morning, I've noticed a huge difference in my energy levels throughout the day.
+                        I feel more refreshed, focused, and ready to take on whatever comes my way!"
+                    </p>
+                </div>
+            </div>
+
+            <div class="testimonial-card bg-white relative">
+                <img src="./assets/testimonial2.jpeg" alt="Person drinking juice" class="w-full h-48 object-cover object-center">
+                <div class="verified-badge">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                    Verified
+                </div>
+                <div class="p-6">
+                    <div class="flex items-center text-secondary-gold mb-3">
+                        <svg class="w-4 h-4 star-icon" viewBox="0 0 20 20"><path d="M10 15.27L16.18 19l-1.64-7.03L20 7.24l-7.19-.61L10 0 7.19 6.63 0 7.24l5.46 4.73L3.82 19z"/></svg>
+                        <svg class="w-4 h-4 star-icon" viewBox="0 0 20 20"><path d="M10 15.27L16.18 19l-1.64-7.03L20 7.24l-7.19-.61L10 0 7.19 6.63 0 7.24l5.46 4.73L3.82 19z"/></svg>
+                        <svg class="w-4 h-4 star-icon" viewBox="0 0 20 20"><path d="M10 15.27L16.18 19l-1.64-7.03L20 7.24l-7.19-.61L10 0 7.19 6.63 0 7.24l5.46 4.73L3.82 19z"/></svg>
+                        <svg class="w-4 h-4 star-icon" viewBox="0 0 20 20"><path d="M10 15.27L16.18 19l-1.64-7.03L20 7.24l-7.19-.61L10 0 7.19 6.63 0 7.24l5.46 4.73L3.82 19z"/></svg>
+                        <svg class="w-4 h-4 star-icon" viewBox="0 0 20 20"><path d="M10 15.27L16.18 19l-1.64-7.03L20 7.24l-7.19-.61L10 0 7.19 6.63 0 7.24l5.46 4.73L3.82 19z"/></svg>
+                    </div>
+                    <p class="text-xl font-semibold text-text-dark mb-2">Amanda L.</p>
+                    <p class="text-gray-700 mb-4 text-base"> "The taste is amazing, and I love that it's all natural." </p>
+                </div>
+            </div>
+
+            <div class="testimonial-card bg-white relative">
+                <img src="./assets/testimonial3.jpeg" alt="Person holding a glass of juice" class="w-full h-48 object-cover object-center">
+                <div class="verified-badge">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                    Verified
+                </div>
+                <div class="p-6">
+                    <div class="flex items-center text-secondary-gold mb-3">
+                        <svg class="w-4 h-4 star-icon" viewBox="0 0 20 20"><path d="M10 15.27L16.18 19l-1.64-7.03L20 7.24l-7.19-.61L10 0 7.19 6.63 0 7.24l5.46 4.73L3.82 19z"/></svg>
+                        <svg class="w-4 h-4 star-icon" viewBox="0 0 20 20"><path d="M10 15.27L16.18 19l-1.64-7.03L20 7.24l-7.19-.61L10 0 7.19 6.63 0 7.24l5.46 4.73L3.82 19z"/></svg>
+                        <svg class="w-4 h-4 star-icon" viewBox="0 0 20 20"><path d="M10 15.27L16.18 19l-1.64-7.03L20 7.24l-7.19-.61L10 0 7.19 6.63 0 7.24l5.46 4.73L3.82 19z"/></svg>
+                        <svg class="w-4 h-4 star-icon" viewBox="0 0 20 20"><path d="M10 15.27L16.18 19l-1.64-7.03L20 7.24l-7.19-.61L10 0 7.19 6.63 0 7.24l5.46 4.73L3.82 19z"/></svg>
+                        <svg class="w-4 h-4 star-icon" viewBox="0 0 20 20"><path d="M10 15.27L16.18 19l-1.64-7.03L20 7.24l-7.19-.61L10 0 7.19 6.63 0 7.24l5.46 4.73L3.82 19z"/></svg>
+                    </div>
+                    <p class="text-xl font-semibold text-text-dark mb-2">Michael R.</p>
+                    <p class="text-gray-700 mb-4 text-base"> "Detox Delight is my go-to for a clean and refreshing feel." </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mx-auto py-12 px-4 max-w-4xl outfit-font">
+        <h2 class="text-4xl font-bold text-center text-text-dark mb-10">Frequently Asked Questions</h2>
+
+        <div class="space-y-6">
+            <div class="faq-item p-6 rounded-xl border border-gray-300 shadow-sm transition-all duration-300 ease-in-out faq-item-collapsed">
+                <button class="flex justify-between items-center w-full text-left font-semibold text-xl text-text-dark faq-toggle">
+                    What makes our juice healthy?
+                    <svg class="w-6 h-6 text-primary-dark-green transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                    </svg>
+                </button>
+                <div class="faq-content hidden mt-4 text-gray-700 leading-relaxed">
+                    Our juices are made from 100% natural, fresh fruits and vegetables,
+                    with no added sugars, preservatives, or artificial flavors. We focus on
+                    cold-pressing to retain maximum nutrients and enzymes.
+                </div>
+            </div>
+
+            <div class="faq-item p-6 rounded-xl border border-gray-300 shadow-sm transition-all duration-300 ease-in-out faq-item-collapsed">
+                <button class="flex justify-between items-center w-full text-left font-semibold text-xl text-text-dark faq-toggle">
+                    Are there any artificial ingredients?
+                    <svg class="w-6 h-6 text-primary-dark-green transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                    </svg>
+                </button>
+                <div class="faq-content hidden mt-4 text-gray-700 leading-relaxed">
+                    Absolutely not! We are committed to purity. All our juices are free from
+                    any artificial colors, flavors, sweeteners, or preservatives.
+                </div>
+            </div>
+
+            <div class="faq-item p-6 rounded-xl border border-gray-300 shadow-sm transition-all duration-300 ease-in-out faq-item-collapsed">
+                <button class="flex justify-between items-center w-full text-left font-semibold text-xl text-text-dark faq-toggle">
+                    How long do the juices stay fresh?
+                    <svg class="w-6 h-6 text-primary-dark-green transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                    </svg>
+                </button>
+                <div class="faq-content hidden mt-4 text-gray-700 leading-relaxed">
+                    For optimal freshness and nutritional value, we recommend consuming
+                    our cold-pressed juices within 3-5 days of purchase. Please keep them
+                    refrigerated.
+                </div>
+            </div>
+
+            <div class="faq-item p-6 rounded-xl border border-gray-300 shadow-sm transition-all duration-300 ease-in-out faq-item-collapsed">
+                <button class="flex justify-between items-center w-full text-left font-semibold text-xl text-text-dark faq-toggle">
+                    Do you offer subscriptions?
+                    <svg class="w-6 h-6 text-primary-dark-green transform transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                    </svg>
+                </button>
+                <div class="faq-content hidden mt-4 text-gray-700 leading-relaxed">
+                    Yes, we do! You can choose from various subscription plans to have your
+                    favorite juices delivered regularly to your doorstep. Visit our 'Our Product'
+                    page for more details on subscription options.
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <footer class="footer-dark py-12 mt-10 outfit-font">
+        <div class="container mx-auto px-6 text-center md:text-left">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-center justify-between">
+                <div class="mb-6 md:mb-0 space-y-4">
+                    <a class="text-md beyonders-font font-semibold text-black" href="./index.html">
+                        <img class="w-40" src="./assets/juicee_white.png" alt="">
+                    </a>
+                    <p class="text-sm mt-2 max-w-xs mx-auto md:mx-0">Sip nature's best. Pure, fresh, and revitalizing juices for a healthier you.</p>
+                </div>
+
+                <nav class="flex flex-col space-y-3 mb-6 md:mb-0">
+                    <h4 class="text-lg font-semibold mb-2">Quick Links</h4>
+                    <a href="./index.html" class="footer-link">Home</a>
+                    <a href="./about.html" class="footer-link">About Us</a>
+                    <a href="./product.html" class="footer-link">Our Products</a>
+                </nav>
+
+                <div class="text-center md:text-right">
+                    <h4 class="text-lg font-semibold mb-3">Connect With Us</h4>
+                    <div class="flex justify-center md:justify-end space-x-4 mb-4">
+                        <a href="#" aria-label="Youtube" class="social-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-youtube" viewBox="0 0 16 16">
+                            <path d="M8.051 1.999h.089c.822.003 4.987.033 6.11.335a2.01 2.01 0 0 1 1.415 1.42c.101.38.172.883.22 1.402l.01.104.022.26.008.104c.065.914.073 1.77.074 1.957v.075c-.001.194-.01 1.108-.082 2.06l-.008.105-.009.104c-.05.572-.124 1.14-.235 1.558a2.01 2.01 0 0 1-1.415 1.42c-1.16.312-5.569.334-6.18.335h-.142c-.309 0-1.587-.006-2.927-.052l-.17-.006-.087-.004-.171-.007-.171-.007c-1.11-.049-2.167-.128-2.654-.26a2.01 2.01 0 0 1-1.415-1.419c-.111-.417-.185-.986-.235-1.558L.09 9.82l-.008-.104A31 31 0 0 1 0 7.68v-.123c.002-.215.01-.958.064-1.778l.007-.103.003-.052.008-.104.022-.26.01-.104c.048-.519.119-1.023.22-1.402a2.01 2.01 0 0 1 1.415-1.42c.487-.13 1.544-.21 2.654-.26l.17-.007.172-.006.086-.003.171-.007A100 100 0 0 1 7.858 2zM6.4 5.209v4.818l4.157-2.408z"/>
+                            </svg>
+                        </a>
+                        <a href="#" aria-label="Twitter" class="social-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-twitter-x" viewBox="0 0 16 16">
+                            <path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865z"/>
+                            </svg>
+                        </a>
+                        <a href="#" aria-label="Instagram" class="social-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" class="bi bi-instagram" viewBox="0 0 16 16">
+                            <path d="M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.42a3.9 3.9 0 0 0-1.417.923A3.9 3.9 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.7.01 5.555 0 5.827 0 8.001c0 2.172.01 2.444.048 3.297.04.852.174 1.433.372 1.942.205.526.478.972.923 1.417.444.445.89.719 1.416.923.51.198 1.09.333 1.942.372C5.555 15.99 5.827 16 8 16s2.444-.01 3.298-.048c.851-.04 1.434-.174 1.943-.372a3.9 3.9 0 0 0 1.416-.923c.445-.445.718-.891.923-1.417.197-.509.332-1.09.372-1.942C15.99 10.445 16 10.173 16 8s-.01-2.445-.048-3.299c-.04-.851-.175-1.433-.372-1.941a3.9 3.9 0 0 0-.923-1.417A3.9 3.9 0 0 0 13.24.42c-.51-.198-1.092-.333-1.943-.372C10.443.01 10.172 0 7.998 0zm-.717 1.442h.718c2.136 0 2.389.007 3.232.046.78.035 1.204.166 1.486.275.373.145.64.319.92.599s.453.546.598.92c.11.281.24.705.275 1.485.039.843.047 1.096.047 3.231s-.008 2.389-.047 3.232c-.035.78-.166 1.203-.275 1.485a2.5 2.5 0 0 1-.599.919c-.28.28-.546.453-.92.598-.28.11-.704.24-1.485.276-.843.038-1.096.047-3.232.047s-2.39-.009-3.233-.047c-.78-.036-1.203-.166-1.485-.276a2.5 2.5 0 0 1-.92-.598 2.5 2.5 0 0 1-.6-.92c-.109-.281-.24-.705-.275-1.485-.038-.843-.046-1.096-.046-3.233s.008-2.388.046-3.231c.036-.78.166-1.204.276-1.486.145-.373.319-.64.599-.92s.546-.453.92-.598c.282-.11.705-.24 1.485-.276.738-.034 1.024-.044 2.515-.045zm4.988 1.328a.96.96 0 1 0 0 1.92.96.96 0 0 0 0-1.92m-4.27 1.122a4.109 4.109 0 1 0 0 8.217 4.109 4.109 0 0 0 0-8.217m0 1.441a2.667 2.667 0 1 1 0 5.334 2.667 2.667 0 0 1 0-5.334"/>
+                            </svg>
+                        </a>
+                    </div>
+                    <p class="text-sm">Email: info@juice.com</p>
+                    <p class="text-sm">Phone: +1 (555) 123-4567</p>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-700 pt-6 mt-8 text-sm text-center">
+                <p>&copy; 2024 Juice. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+<script>
+    window.BACKEND_API_URL = '__BACKEND_API_URL__';
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const backendUrl = window.BACKEND_API_URL;
+        const userIconLink = document.getElementById('userIconLink');
+        const userDropdown = document.getElementById('userDropdown');
+        const profileLink = document.getElementById('profileLink');
+        const logoutLink = document.getElementById('logoutLink');
+        const profileModal = document.getElementById('profileModal');
+        const closeProfileModalBtn = document.getElementById('closeProfileModalBtn');
+        const logoutModal = document.getElementById('logoutModal');
+        const closeLogoutModalBtn = document.getElementById('closeLogoutModalBtn');
+        const logoutModalOkBtn = document.getElementById('logoutModalOkBtn');
+        const profileUserName = document.getElementById('profileUserName');
+        const profileUserEmail = document.getElementById('profileUserEmail');
+        const pastOrdersList = document.getElementById('pastOrdersList');
+        const mainContent = document.querySelector('.fade-in-content');
+
+        // Function to check login status and update UI
+        function checkLoginStatus() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            const userName = localStorage.getItem('userName');
+            const userEmail = localStorage.getItem('userEmail');
+
+            if (isLoggedIn && userName && userEmail) {
+                userIconLink.removeAttribute('href'); // Remove link to register page
+                userIconLink.style.cursor = 'pointer'; // Indicate it's clickable
+                userIconLink.addEventListener('click', toggleDropdown); // Add event listener for dropdown
+                profileLink.style.display = 'block';
+                logoutLink.style.display = 'block';
+            } else {
+                userIconLink.setAttribute('href', './register.html'); // Link to register page
+                userIconLink.style.cursor = 'pointer';
+                userIconLink.removeEventListener('click', toggleDropdown); // Remove event listener if not logged in
+                userDropdown.classList.remove('active'); // Hide dropdown
+                profileLink.style.display = 'none';
+                logoutLink.style.display = 'none';
+            }
+        }
+
+        // Toggle dropdown visibility
+        function toggleDropdown(event) {
+            event.preventDefault(); // Prevent default link behavior
+            userDropdown.classList.toggle('active');
+        }
+
+        // Handle logout
+        function handleLogout(event) {
+            event.preventDefault();
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('userName');
+            localStorage.removeItem('userEmail');
+            logoutModal.classList.add('show');
+            logoutModal.style.display = 'flex';
+            userDropdown.classList.remove('active'); // Hide dropdown after logout
+            checkLoginStatus(); // Update UI after logout
+        }
+
+        // Open Profile Modal
+        async function openProfileModal(event) {
+            event.preventDefault();
+            const userEmail = localStorage.getItem('userEmail');
+            const userName = localStorage.getItem('userName');
+
+            if (userName) {
+                profileUserName.textContent = userName;
+            } else {
+                profileUserName.textContent = 'N/A';
+            }
+
+            if (userEmail) {
+                profileUserEmail.textContent = userEmail;
+                try {
+                    const response = await fetch(`${backendUrl}/orders/${userEmail}`);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    const orders = await response.json();
+                    displayPastOrders(orders);
+                } catch (error) {
+                    console.error('Error fetching past orders:', error);
+                    pastOrdersList.innerHTML = '<p class="text-red-500">Error loading past orders.</p>';
+                }
+            } else {
+                profileUserEmail.textContent = 'N/A';
+                pastOrdersList.innerHTML = '<p class="text-gray-500">Please log in to view past orders.</p>';
+            }
+
+            profileModal.classList.add('show');
+            profileModal.style.display = 'flex';
+            userDropdown.classList.remove('active'); // Hide dropdown when modal opens
+        }
+
+        // Display past orders in the modal
+        function displayPastOrders(orders) {
+            pastOrdersList.innerHTML = ''; // Clear previous content
+            if (orders && orders.length > 0) {
+                orders.forEach(order => {
+                    const orderDiv = document.createElement('div');
+                    orderDiv.classList.add('order-item', 'mb-2', 'pb-2', 'border-b', 'border-gray-200');
+                    orderDiv.innerHTML = `
+                        <p class="font-semibold">${order.product_name}</p>
+                        <p>Quantity: ${order.quantity}</p>
+                        <p>Price: $${order.price.toFixed(2)}</p>
+                        <p class="text-sm text-gray-500">Date: ${new Date(order.order_date).toLocaleDateString()}</p>
+                    `;
+                    pastOrdersList.appendChild(orderDiv);
+                });
+            } else {
+                pastOrdersList.innerHTML = '<p class="text-gray-500">No past orders found.</p>';
+            }
+        }
+
+        // Close modal function
+        function closeModal(modal) {
+            modal.classList.remove('show');
+            modal.addEventListener('transitionend', function handler() {
+                modal.style.display = 'none';
+                modal.removeEventListener('transitionend', handler);
+            });
+        }
+
+        // Event Listeners
+        if (userIconLink) {
+            // Initial setup for user icon based on login status
+            checkLoginStatus();
+        }
+
+        if (profileLink) {
+            profileLink.addEventListener('click', openProfileModal);
+        }
+        if (logoutLink) {
+            logoutLink.addEventListener('click', handleLogout);
+        }
+        if (closeProfileModalBtn) {
+            closeProfileModalBtn.addEventListener('click', () => closeModal(profileModal));
+        }
+        if (closeLogoutModalBtn) {
+            closeLogoutModalBtn.addEventListener('click', () => closeModal(logoutModal));
+        }
+        if (logoutModalOkBtn) {
+            logoutModalOkBtn.addEventListener('click', () => {
+                closeModal(logoutModal);
+                window.location.href = './index.html'; // Redirect to home after acknowledging logout
+            });
+        }
+
+        // Close modals if clicking outside
+        window.addEventListener('click', (event) => {
+            if (event.target === profileModal) {
+                closeModal(profileModal);
+            }
+            if (event.target === logoutModal) {
+                closeModal(logoutModal);
+            }
+        });
+
+        // Fade-in effect for main content
+        if (mainContent) {
+            mainContent.classList.add('show');
+        }
+
+        // FAQ Accordion Logic
+        const faqButtons = document.querySelectorAll('.faq-item button');
+        faqButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const faqItem = button.closest('.faq-item');
+                const answer = faqItem.querySelector('.faq-content');
+                const svgIcon = button.querySelector('svg');
+
+                const isExpanded = button.getAttribute('aria-expanded') === 'true';
+
+                // Close all other open FAQs
+                faqButtons.forEach(otherButton => {
+                    const otherFaqItem = otherButton.closest('.faq-item');
+                    const otherAnswer = otherFaqItem.querySelector('.faq-content');
+                    const otherSvgIcon = otherFaqItem.querySelector('svg path[d*="M19 9l-7 7-7-7"]'); // Select the specific path within SVG for rotation
+
+                    if (otherButton !== button && otherButton.getAttribute('aria-expanded') === 'true') {
+                        otherButton.setAttribute('aria-expanded', 'false');
+                        otherAnswer.classList.add('hidden');
+                        if (otherSvgIcon) { // Ensure the icon exists before trying to manipulate it
+                             otherSvgIcon.setAttribute('d', 'M19 9l-7 7-7-7'); // Reset to down arrow
+                        }
+                        otherFaqItem.classList.remove('faq-item-expanded');
+                        otherFaqItem.classList.add('faq-item-collapsed');
+                    }
+                });
+
+                // Toggle current FAQ
+                button.setAttribute('aria-expanded', String(!isExpanded));
+                answer.classList.toggle('hidden');
+                svgIcon.classList.toggle('rotate-180', !isExpanded);
+                faqItem.classList.toggle('faq-item-expanded', !isExpanded);
+                faqItem.classList.toggle('faq-item-collapsed', isExpanded);
+            });
+        });
+
+        // Tab functionality for "What's Inside?" section
+        const tabButtons = document.querySelectorAll('.container button[data-tab]');
+        const featureImage = document.getElementById('featureImage');
+        const featureTitle = document.getElementById('featureTitle');
+        const featureDescription = document.getElementById('featureDescription');
+
+        const tabContent = {
+            redBoost: {
+                image: './assets/orange_juice.jpeg',
+                title: 'Unleash Your Inner Vitality with Red Boost',
+                description: 'Our Red Boost juice is meticulously crafted with a powerful blend of antioxidant-rich berries and vibrant beetroots. It\'s designed to not only invigorate your senses but also support your body\'s natural defense mechanisms. Experience a surge of natural energy and a radiant glow, all from the goodness of nature. Perfect for kickstarting your day or a midday revitalization.'
+            },
+            tropicalGlow: {
+                image: './assets/tropical_glow.jpeg',
+                title: 'Radiant Refreshment with Tropical Glow',
+                description: 'Dive into a tropical paradise with our Tropical Glow juice. A vibrant mix of mango, pineapple, and passion fruit, this blend is rich in Vitamin C and enzymes that promote healthy digestion and a glowing complexion. It’s your perfect escape to a sunny beach, offering a burst of flavor and a boost to your natural radiance.'
+            },
+            berryStrong: {
+                image: './assets/berry_strong.jpeg',
+                title: 'Fortify Your Body with Berry Strong',
+                description: 'Power up with Berry Strong, a robust blend of blueberries, raspberries, and acai. This juice is an antioxidant powerhouse, supporting your immune system and muscle recovery. Ideal for athletes or anyone looking to strengthen their body\'s natural defenses and enjoy a delicious, nutrient-dense treat.'
+            },
+            detoxDelight: {
+                image: './assets/detox_delight.jpeg',
+                title: 'Cleanse and Revitalize with Detox Delight',
+                description: 'Refresh and reset with our Detox Delight. Featuring crisp green apples, celery, cucumber, and a hint of ginger, this juice aids in natural detoxification and promotes overall well-being. It’s a refreshing way to cleanse your system and feel lighter, brighter, and more energized.'
+            }
+        };
+
+        function changeTab(tabName) {
+            // Remove active class from all buttons
+            tabButtons.forEach(button => {
+                button.classList.remove('tab-active');
+                button.classList.add('text-text-dark', 'hover:text-primary-dark-green');
+            });
+
+            // Add active class to the clicked button
+            document.querySelector(`button[data-tab="${tabName}"]`).classList.add('tab-active');
+            document.querySelector(`button[data-tab="${tabName}"]`).classList.remove('text-text-dark', 'hover:text-primary-dark-green');
+
+            // Update content
+            featureImage.src = tabContent[tabName].image;
+            featureTitle.textContent = tabContent[tabName].title;
+            featureDescription.textContent = tabContent[tabName].description;
+        }
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                changeTab(button.dataset.tab);
+            });
+        });
+
+        // Set initial tab
+        changeTab('redBoost');
+    });
+
+    function handleMobileWarning() {
+        const warning = document.getElementById('mobileWarning');
+        if (window.innerWidth < 700) {
+            warning.classList.remove('hidden');
+        } else {
+            warning.classList.add('hidden');
+        }
+    }
+    window.addEventListener('resize', handleMobileWarning);
+    window.addEventListener('DOMContentLoaded', handleMobileWarning);
+</script>
+</body>
+</html>
