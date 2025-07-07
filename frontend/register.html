@@ -6,15 +6,15 @@
   <meta name="description" content="Login or create an account for Juice, your healthy beverage destination.">
   <title>Login & Sign Up - JUICE</title>
 
-  <link href="./output.css" rel="stylesheet">
+  <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
   
-  <link href="https://fonts.cdnfonts.com/css/beyonders" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/helvetica-neue-55" rel="stylesheet">
   <link href="https://fonts.cdnfonts.com/css/noto-sans-display-2" rel="stylesheet">
 
   <style>
     /* Custom styles for branding (keep these as they are your custom styles) */
-    .beyonders-font {
-        font-family: 'Beyonders', sans-serif;
+    .helvetica-font {
+        font-family: 'Helvetica Neue', sans-serif;
     }
     .noto-font {
         font-family: 'Noto Sans Display', sans-serif;
@@ -81,10 +81,12 @@
     }
   </style>
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+<body class="bg-[#F8F4EA] flex items-center justify-center min-h-screen p-4">
 
   <div class="bg-white p-8 rounded-lg shadow-xl w-full max-w-md">
-    <h1 class="text-3xl font-bold text-center text-brand-dark mb-6 noto-font">JUICE</h1>
+    <div class="flex justify-center mb-6">
+      <img class="w-30" src="./assets/juicee_logo.png" alt="">
+    </div>
 
     <div class="flex mb-6 border-b border-gray-200">
       <button id="loginTabBtn" class="flex-1 py-3 text-lg font-semibold text-center text-brand-dark border-b-2 border-transparent hover:border-brand-dark focus:outline-none">
@@ -97,35 +99,37 @@
 
     <form id="loginForm" class="space-y-4">
       <div>
-        <label for="loginEmail" class="block text-sm font-medium text-gray-700">Email</label>
+        <label for="loginEmail" class="block text-md font-medium text-gray-700">Email:</label>
         <input type="email" id="loginEmail" name="email" required
                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-dark focus:border-brand-dark sm:text-sm">
       </div>
       <div>
-        <label for="loginPassword" class="block text-sm font-medium text-gray-700">Password</label>
+        <label for="loginPassword" class="block text-md font-medium text-gray-700">Password:</label>
         <input type="password" id="loginPassword" name="password" required
                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-dark focus:border-brand-dark sm:text-sm">
       </div>
-      <button type="submit" class="btn-gradient-green w-full">Login</button>
+      <button type="submit" class="btn-gradient-green w-full my-5">Login</button>
+      <div class="flex justify-center font-semibold">--Use dummy login & password--</div>
     </form>
 
     <form id="signupForm" class="space-y-4 hidden">
       <div>
-        <label for="signupName" class="block text-sm font-medium text-gray-700">Name</label>
+        <label for="signupName" class="block text-md font-medium text-gray-700">Name:</label>
         <input type="text" id="signupName" name="name" required
                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-dark focus:border-brand-dark sm:text-sm">
       </div>
       <div>
-        <label for="signupEmail" class="block text-sm font-medium text-gray-700">Email</label>
+        <label for="signupEmail" class="block text-md font-medium text-gray-700">Email:</label>
         <input type="email" id="signupEmail" name="email" required
                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-dark focus:border-brand-dark sm:text-sm">
       </div>
       <div>
-        <label for="signupPassword" class="block text-sm font-medium text-gray-700">Password</label>
+        <label for="signupPassword" class="block text-md font-medium text-gray-700">Password:</label>
         <input type="password" id="signupPassword" name="password" required
                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-dark focus:border-brand-dark sm:text-sm">
       </div>
-      <button type="submit" class="btn-gradient-green w-full">Sign Up</button>
+      <button type="submit" class="btn-gradient-green w-full my-5">Sign Up</button>
+      <div class="flex justify-center font-semibold">--Use dummy email & password--</div>
     </form>
   </div>
 
