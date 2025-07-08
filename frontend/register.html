@@ -2,19 +2,16 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Login or create an account for Juice, your healthy beverage destination.">
-  <title>Login & Sign Up - JUICE</title>
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <meta name="description" content="Login or create an account for Juice, your healthy beverage destination."> <title>Login & Sign Up - JUICE</title>
   <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
   
-  <link href="https://fonts.cdnfonts.com/css/helvetica-neue-55" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/beyonders" rel="stylesheet">
   <link href="https://fonts.cdnfonts.com/css/noto-sans-display-2" rel="stylesheet">
 
   <style>
-    /* Custom styles for branding (keep these as they are your custom styles) */
-    .helvetica-font {
-        font-family: 'Helvetica Neue', sans-serif;
+    /* Custom styles for branding */
+    .beyonders-font {
+        font-family: 'Beyonders', sans-serif;
     }
     .noto-font {
         font-family: 'Noto Sans Display', sans-serif;
@@ -23,22 +20,60 @@
         color: #0F253E; /* Dark greenish-blue from home.html */
     }
     /* .bg-brand-gradient { Removed: This class was defined but not used in the HTML.
-        background: linear-gradient(to right, #a2e633, #7ce633, #a2e633);
+        background: linear-gradient(to right, #a2e633, #7ce633, #a2e633); 
     } */
     .btn-gradient-green {
-        background: linear-gradient(to right, #4CAF50, #66BB6A); /* Green gradient */
-        color: white;
-        border: none;
-        padding: 0.75rem 1.5rem;
-        border-radius: 0.5rem;
-        cursor: pointer;
-        transition: background 0.3s ease;
+        background: linear-gradient(to right, #4CAF50, #66BB6A); /* Green gradient for signup */
+        transition: all 0.3s ease;
     }
     .btn-gradient-green:hover {
-        background: linear-gradient(to right, #66BB6A, #4CAF50);
+        opacity: 0.9;
+        transform: translateY(-1px);
+    }
+    .btn-gradient-green:active { /* Added active state for better UI feedback */
+        transform: translateY(0);
+    }
+    .btn-gradient-blue {
+        background: linear-gradient(to right, #2196F3, #1976D2); /* Blue gradient for login */
+        transition: all 0.3s ease;
+    }
+    .btn-gradient-blue:hover {
+        opacity: 0.9;
+        transform: translateY(-1px);
+    }
+    .btn-gradient-blue:active { /* Added active state for better UI feedback */
+        transform: translateY(0);
+    }
+    .input-style {
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 10px 15px;
+        width: 100%;
+        box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .form-container {
+        background-color: rgba(255, 255, 255, 0.9);
+        border-radius: 12px;
+        padding: 40px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        max-width: 450px;
+        width: 90%;
+        backdrop-filter: blur(5px);
+    }
+    .toggle-button {
+        background-color: #f0f0f0;
+        color: #0F253E;
+        padding: 10px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+    .toggle-button.active {
+        background-color: #7ce633;
+        color: white;
     }
 
-    /* Modal styles */
+    /* Modal Styles */
     .modal {
         display: none; /* Hidden by default */
         position: fixed; /* Stay in place */
@@ -52,178 +87,160 @@
         justify-content: center;
         align-items: center;
         opacity: 0;
-        transition: opacity 0.3s ease-in-out;
+        visibility: hidden;
+        transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
     }
-
-    .modal[data-show="true"] {
-        display: flex;
+    .modal.show {
         opacity: 1;
+        visibility: visible;
     }
 
     .modal-content {
         background-color: #fefefe;
-        margin: auto;
-        padding: 20px;
-        border-radius: 8px;
+        padding: 30px;
+        border-radius: 10px;
         box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        max-width: 500px;
-        width: 90%;
-        text-align: center;
+        width: 80%; /* Could be responsive */
+        max-width: 400px; /* Smaller for notification-like modals */
         position: relative;
+        text-align: center;
+        transform: translateY(-20px); /* Initial slight offset */
+        transition: transform 0.3s ease-in-out;
+    }
+    .modal.show .modal-content {
+        transform: translateY(0); /* Move to original position when shown */
     }
 
     .close-button {
+        color: #aaa;
         position: absolute;
         top: 10px;
         right: 20px;
-        font-size: 24px;
+        font-size: 28px;
+        font-weight: bold;
         cursor: pointer;
     }
+    .close-button:hover, .close-button:focus {
+        color: black;
+        text-decoration: none;
+    }
+
   </style>
 </head>
-<body class="bg-[#F8F4EA] flex items-center justify-center min-h-screen p-4">
+<body class="flex items-center justify-center min-h-screen bg-[#F8F4EA] noto-font">
 
-  <div class="bg-white p-8 rounded-lg shadow-xl w-full max-w-md">
+  <div class="form-container">
     <div class="flex justify-center mb-6">
-      <img class="w-30" src="./assets/juicee_logo.png" alt="">
-    </div>
-
-    <div class="flex mb-6 border-b border-gray-200">
-      <button id="loginTabBtn" class="flex-1 py-3 text-lg font-semibold text-center text-brand-dark border-b-2 border-transparent hover:border-brand-dark focus:outline-none">
-        Login
-      </button>
-      <button id="signupTabBtn" class="flex-1 py-3 text-lg font-semibold text-center text-brand-dark border-b-2 border-transparent hover:border-brand-dark focus:outline-none">
-        Sign Up
-      </button>
+      <button id="loginToggle" class="toggle-button active">Login</button>
+      <button id="signupToggle" class="toggle-button ml-4">Sign Up</button>
     </div>
 
     <form id="loginForm" class="space-y-4">
+      <h2 class="text-3xl font-bold text-center text-brand-dark mb-6">Login</h2>
       <div>
-        <label for="loginEmail" class="block text-md font-medium text-gray-700">Email:</label>
-        <input type="email" id="loginEmail" name="email" required
-               class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-dark focus:border-brand-dark sm:text-sm">
+        <label for="loginEmail" class="block text-sm font-medium text-gray-700">Email:</label>
+        <input type="email" id="loginEmail" name="email" required class="input-style mt-1" />
       </div>
       <div>
-        <label for="loginPassword" class="block text-md font-medium text-gray-700">Password:</label>
-        <input type="password" id="loginPassword" name="password" required
-               class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-dark focus:border-brand-dark sm:text-sm">
+        <label for="loginPassword" class="block text-sm font-medium text-gray-700">Password:</label>
+        <input type="password" id="loginPassword" name="password" required class="input-style mt-1" />
       </div>
-      <button type="submit" class="btn-gradient-green w-full my-5">Login</button>
-      <div class="flex justify-center font-semibold">--Use dummy login & password--</div>
+      <button type="submit" class="w-full text-white py-3 rounded-lg font-semibold btn-gradient-blue">Login</button>
+      <div class="text-center mt-4">
+        <a href="/static/index.html" class="text-brand-dark hover:underline text-sm">Back to Home</a>
+      </div>
     </form>
 
     <form id="signupForm" class="space-y-4 hidden">
+      <h2 class="text-3xl font-bold text-center text-brand-dark mb-6">Sign Up</h2>
       <div>
-        <label for="signupName" class="block text-md font-medium text-gray-700">Name:</label>
-        <input type="text" id="signupName" name="name" required
-               class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-dark focus:border-brand-dark sm:text-sm">
+        <label for="signupName" class="block text-sm font-medium text-gray-700">Name:</label>
+        <input type="text" id="signupName" name="name" required class="input-style mt-1" />
       </div>
       <div>
-        <label for="signupEmail" class="block text-md font-medium text-gray-700">Email:</label>
-        <input type="email" id="signupEmail" name="email" required
-               class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-dark focus:border-brand-dark sm:text-sm">
+        <label for="signupEmail" class="block text-sm font-medium text-gray-700">Email:</label>
+        <input type="email" id="signupEmail" name="email" required class="input-style mt-1" />
       </div>
       <div>
-        <label for="signupPassword" class="block text-md font-medium text-gray-700">Password:</label>
-        <input type="password" id="signupPassword" name="password" required
-               class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-brand-dark focus:border-brand-dark sm:text-sm">
+        <label for="signupPassword" class="block text-sm font-medium text-gray-700">Password:</label>
+        <input type="password" id="signupPassword" name="password" required class="input-style mt-1" />
       </div>
-      <button type="submit" class="btn-gradient-green w-full my-5">Sign Up</button>
-      <div class="flex justify-center font-semibold">--Use dummy email & password--</div>
+      <button type="submit" class="w-full text-white py-3 rounded-lg font-semibold btn-gradient-green">Sign Up</button>
+       <div class="text-center mt-4">
+        <a href="/static/index.html" class="text-brand-dark hover:underline text-sm">Back to Home</a>
+      </div>
     </form>
   </div>
 
-  <div id="loginSuccessModal" class="modal" data-show="false">
-    <div class="modal-content">
-      <span class="close-button" onclick="hideModal(document.getElementById('loginSuccessModal'))">&times;</span>
-      <h2 class="text-2xl font-bold text-brand-dark mb-4">Login Successful!</h2>
-      <p class="mb-4">You have successfully logged in. Welcome back!</p>
-      <button onclick="closeModalAndRedirect(document.getElementById('loginSuccessModal'))" class="btn-gradient-green">Continue to Home</button>
-    </div>
+  <div id="loginSuccessModal" class="modal">
+      <div class="modal-content">
+          <span class="close-button" id="closeLoginSuccessModalBtn" role="button" aria-label="Close Login Success Modal">&times;</span> <h2 class="text-2xl font-bold text-brand-dark mb-4">Login Successful!</h2>
+          <p>Welcome back to Juice!</p>
+      </div>
   </div>
 
-  <div id="signupSuccessModal" class="modal" data-show="false">
-    <div class="modal-content">
-      <span class="close-button" onclick="hideModal(document.getElementById('signupSuccessModal'))">&times;</span>
-      <h2 class="text-2xl font-bold text-brand-dark mb-4">Signup Successful!</h2>
-      <p class="mb-4">Your account has been created. You are now logged in!</p>
-      <button onclick="closeModalAndRedirect(document.getElementById('signupSuccessModal'))" class="btn-gradient-green">Continue to Home</button>
-    </div>
+  <div id="signupSuccessModal" class="modal">
+      <div class="modal-content">
+          <span class="close-button" id="closeSignupSuccessModalBtn" role="button" aria-label="Close Signup Success Modal">&times;</span> <h2 class="text-2xl font-bold text-brand-dark mb-4">Signup Successful!</h2>
+          <p>Welcome to Juice! You can now log in.</p>
+      </div>
   </div>
 
-<script>
-    // --- Dynamic Backend URL Setup ---
-    // This variable will be automatically replaced by Vercel during deployment.
-    // '__VITE_BACKEND_API_URL__' is a unique placeholder string.
+
+  <script>
     window.BACKEND_API_URL = '__BACKEND_API_URL__';
 
-    // --- Tab Switching Logic ---
-    const loginTabBtn = document.getElementById("loginTabBtn");
-    const signupTabBtn = document.getElementById("signupTabBtn");
     const loginForm = document.getElementById("loginForm");
     const signupForm = document.getElementById("signupForm");
-
-    // Initialize tabs
-    loginTabBtn.classList.add('border-brand-dark');
-    signupTabBtn.classList.add('border-transparent');
-    loginForm.classList.remove('hidden');
-    signupForm.classList.add('hidden');
-
-    loginTabBtn.addEventListener("click", () => {
-        loginTabBtn.classList.add('border-brand-dark');
-        loginTabBtn.classList.remove('border-transparent');
-        signupTabBtn.classList.remove('border-brand-dark');
-        signupTabBtn.classList.add('border-transparent');
-        loginForm.classList.remove('hidden');
-        signupForm.classList.add('hidden');
-    });
-
-    signupTabBtn.addEventListener("click", () => {
-        signupTabBtn.classList.add('border-brand-dark');
-        signupTabBtn.classList.remove('border-transparent');
-        loginTabBtn.classList.remove('border-brand-dark');
-        loginTabBtn.classList.add('border-transparent');
-        signupForm.classList.remove('hidden');
-        loginForm.classList.add('hidden');
-    });
-
-    // --- Modals Logic ---
     const loginSuccessModal = document.getElementById('loginSuccessModal');
     const signupSuccessModal = document.getElementById('signupSuccessModal');
 
-    function showModal(modalElement, redirectPath = null) {
-        modalElement.dataset.show = 'true';
-        modalElement.classList.remove('hidden');
-        // If a redirect path is provided, set a timeout to redirect
-        if (redirectPath) {
-            modalElement.dataset.redirectPath = redirectPath;
+    // Show modal and optionally redirect
+    function showModal(modalElement, redirectUrl = null) {
+        modalElement.style.display = 'block';
+        modalElement.setAttribute('aria-hidden', 'false');
+
+        let timeoutId;
+        if (redirectUrl) {
+            timeoutId = setTimeout(() => {
+                window.location.href = redirectUrl;
+            }, 2000); // Redirect after 2 seconds
         }
-    }
 
-    function hideModal(modalElement) {
-        modalElement.dataset.show = 'false';
-        // Use setTimeout to allow transition to complete before hiding
-        setTimeout(() => {
-            if (modalElement.dataset.show === 'false') {
-                modalElement.classList.add('hidden');
+        const closeBtn = modalElement.querySelector('.close-button');
+        const closeHandler = () => {
+            modalElement.style.display = 'none';
+            modalElement.setAttribute('aria-hidden', 'true');
+            if (timeoutId) clearTimeout(timeoutId); // Clear timeout if manually closed
+        };
+
+        if (closeBtn) closeBtn.onclick = closeHandler;
+
+        // Click outside to close (optional, common for modals)
+        window.addEventListener('click', function outsideClickHandler(event) {
+            if (event.target === modalElement) {
+                closeHandler();
+                window.removeEventListener('click', outsideClickHandler); // Remove listener to avoid duplicates
             }
-        }, 300); // Must match CSS transition-duration
+        });
     }
 
-    function closeModalAndRedirect(modalElement) {
-        hideModal(modalElement);
-        const redirectPath = modalElement.dataset.redirectPath || '/'; // Default to root
-        window.location.href = redirectPath;
-    }
+    // Toggle between login and signup forms
+    document.getElementById("loginToggle").addEventListener("click", () => {
+        signupForm.classList.add("hidden");
+        loginForm.classList.remove("hidden");
+    });
+    document.getElementById("signupToggle").addEventListener("click", () => {
+        loginForm.classList.add("hidden");
+        signupForm.classList.remove("hidden");
+    });
 
-
-    // --- Handle Login ---
+    // Handle Login
     loginForm.addEventListener("submit", async function(event) {
         event.preventDefault();
         const email = document.getElementById("loginEmail").value;
         const password = document.getElementById("loginPassword").value;
 
-        // Use the dynamic backendUrl for fetch calls
         const backendUrl = window.BACKEND_API_URL;
 
         try {
@@ -234,24 +251,23 @@
             });
             const data = await res.json();
             if (!res.ok) throw new Error(data.detail || "Login failed");
-
+            // Store user info
             localStorage.setItem('userEmail', email);
+            localStorage.setItem('userName', data.user_name);
             localStorage.setItem('isLoggedIn', 'true');
-            // Redirect to the root of your Vercel frontend after successful login
-            showModal(loginSuccessModal, "/"); // Use "/" for Vercel's root (index.html)
+            showModal(loginSuccessModal, "./index.html");
         } catch (error) {
             alert("Login Error: " + error.message);
         }
     });
 
-    // --- Handle Signup ---
+    // Handle Signup
     signupForm.addEventListener("submit", async function(event) {
         event.preventDefault();
         const name = document.getElementById("signupName").value;
         const email = document.getElementById("signupEmail").value;
         const password = document.getElementById("signupPassword").value;
 
-        // Use the dynamic backendUrl for fetch calls
         const backendUrl = window.BACKEND_API_URL;
 
         try {
@@ -262,12 +278,11 @@
             });
             const data = await res.json();
             if (!res.ok) throw new Error(data.detail || "Signup failed");
-
+            // Store user info
             localStorage.setItem('userEmail', email);
-            localStorage.setItem('userName', data.user_name || name); // Assume backend returns user_name
+            localStorage.setItem('userName', data.user_name || name);
             localStorage.setItem('isLoggedIn', 'true');
-            // Redirect to the root of your Vercel frontend after successful signup
-            showModal(signupSuccessModal, "/"); // Use "/" for Vercel's root (index.html)
+            showModal(signupSuccessModal, "./index.html");
         } catch (error) {
             alert("Signup Error: " + error.message);
         }
