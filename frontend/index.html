@@ -247,11 +247,6 @@
 </head>
 <body class="antialiased font-sans" style="background-color: var(--light-cream);">
 
-    <div id="mobileWarning" class="fixed inset-0 w-full h-full z-[2000] space-x-2 flex flex-col justify-center items-center bg-black text-white text-center py-3 text-base font-semibold hidden">
-        <h1 class="text-3xl font-bold">Open in Laptop only</h1>
-        <p class="text-lg">This website is best viewed on larger screens.</p>
-    </div>
-
     <header class="sticky top-0 z-30 flex justify-between items-center py-4 px-6 text-black backdrop-blur-md transition-colors duration-300">
         <div class="flex items-center space-x-4">
             <a class="text-md beyonders-font font-semibold text-black" href="./index.html">
@@ -588,6 +583,7 @@
 
     document.addEventListener('DOMContentLoaded', () => {
         const backendUrl = window.BACKEND_API_URL;
+
         const userIconLink = document.getElementById('userIconLink');
         const userDropdown = document.getElementById('userDropdown');
         const profileLink = document.getElementById('profileLink');
@@ -837,17 +833,6 @@
         // Set initial tab
         changeTab('redBoost');
     });
-
-    function handleMobileWarning() {
-        const warning = document.getElementById('mobileWarning');
-        if (window.innerWidth < 700) {
-            warning.classList.remove('hidden');
-        } else {
-            warning.classList.add('hidden');
-        }
-    }
-    window.addEventListener('resize', handleMobileWarning);
-    window.addEventListener('DOMContentLoaded', handleMobileWarning);
 </script>
 </body>
 </html>
