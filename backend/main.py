@@ -118,7 +118,7 @@ async def login(user: UserLogin):
     finally:
         conn.close()
 
-@app.post("/orders")
+@app.post("/purchase")
 async def create_order(order: OrderCreate):
     conn = sqlite3.connect('juice_shop.db')
     cursor = conn.cursor()
