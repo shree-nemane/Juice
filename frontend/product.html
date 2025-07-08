@@ -957,6 +957,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             // --- Authentication Status Check ---
             const backendUrl = window.BACKEND_API_URL;
+
             function checkLoginStatus() {
                 const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true'; // Standardized key
                 const userName = localStorage.getItem('userName'); // Standardized key
