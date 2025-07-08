@@ -862,11 +862,12 @@
             };
 
             try {
-                const res = await fetch(`${backendUrl}/purchase`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(orderData)
-                });
+                const res = await fetch(`${window.BACKEND_API_URL}/purchase`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(orderData)
+            });
+
 
                 if (!res.ok) {
                     const errorData = await res.json();
