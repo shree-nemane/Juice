@@ -13,7 +13,7 @@ app = FastAPI()
 # This ensures that only your frontend can make requests to your backend API.
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://juice-wine.vercel.app"], # <--- REPLACE THIS WITH YOUR ACTUAL VERCEL FRONTEND URL
+    allow_origins=["https://juice-git-juice-test-shree-nemanes-projects.vercel.app"], # <--- REPLACE THIS WITH YOUR ACTUAL VERCEL FRONTEND URL
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
